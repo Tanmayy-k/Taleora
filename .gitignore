@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Environment Variables
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Outputs (store generation outputs locally, don't commit megabytes of generated media)
+outputs/images/*
+outputs/audio/*
+outputs/videos/*
+outputs/pdfs/*
+!outputs/images/.gitkeep
+!outputs/audio/.gitkeep
+!outputs/videos/.gitkeep
+!outputs/pdfs/.gitkeep
+!outputs/stories/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store
