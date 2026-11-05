@@ -16,6 +16,8 @@ from modules.blip_verifier import BLIPVerifier
 from modules.audio_generator import AudioGenerator
 from modules.music_generator import MusicGenerator
 from modules.export_manager import ExportManager
+from modules.safety_filter import ChildSafetyFilter, SafetyReport
+from modules.originality_checker import OriginalityChecker, OriginalityReport
 
 # ---------------------------------------------------------
 # Page Configuration & Styling
@@ -682,6 +684,79 @@ with tabs[3]:
                                         st.rerun()
 
                             st.markdown("---")
+
+        # ---------------------------------------------------------
+        # SECTION 2: CHILD SAFETY FILTER (Requirement U5)
+        # ---------------------------------------------------------
+        st.markdown("---")
+        st.markdown("### 🛡️ Child Safety & Content Filtering (Requirement U5)")
+        st.caption("Multi-layer content guardrail combining lexical screening and LLM Safety Guardian evaluation.")
+
+        c_safe_btn, c_safe_space = st.columns([1, 2])
+        with c_safe_btn:
+            if st.button("🛡️ Run Child Safety Audit", type="primary", use_container_width=True):
+                safety_filter = ChildSafetyFilter(api_key=api_key_input.strip() or config.GEMINI_API_KEY)
+                with st.spinner("Auditing story content for child safety and age-appropriateness..."):
+                    try:
+                        s_report = safety_filter.evaluate_story_safety(story)
+                        st.session_state["safety_report"] = s_report
+                        st.success("Child safety evaluation completed!")
+                    except Exception as e:
+                        st.error(f"Safety evaluation failed: {e}")
+
+        s_report: SafetyReport = st.session_state.get("safety_report")
+        if s_report:
+            col_s1, col_s2, col_s3 = st.columns(3)
+            col_s1.metric("Safety Score", f"{s_report.safety_score}%")
+            col_s2.metric("Rating", s_report.safety_rating)
+            col_s3.metric("Status", "✅ APPROVED" if s_report.is_safe else "⚠️ REVIEW REQUIRED")
+
+            safe_box_color = "#ecfdf5" if s_report.is_safe else "#fff1f2"
+            safe_border = "#a7f3d0" if s_report.is_safe else "#fecdd3"
+            st.markdown(f"""
+            <div style="background: {safe_box_color}; border: 1px solid {safe_border}; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
+                <p><strong>Evaluation Summary:</strong> {s_report.explanation}</p>
+                <p><strong>Guidance / Advice:</strong> {s_report.mitigation_advice}</p>
+                {f"<p><strong>Flagged Categories:</strong> {', '.join(s_report.flagged_categories)}</p>" if s_report.flagged_categories else ""}
+            </div>
+            """, unsafe_allow_html=True)
+
+        # ---------------------------------------------------------
+        # SECTION 3: STORY ORIGINALITY CHECKER (Requirement U5)
+        # ---------------------------------------------------------
+        st.markdown("---")
+        st.markdown("### ✨ Story Originality & Uniqueness Audit (Requirement U5)")
+        st.caption("Algorithmic corpus comparison against classic tales and LLM semantic novelty analysis.")
+
+        c_orig_btn, c_orig_space = st.columns([1, 2])
+        with c_orig_btn:
+            if st.button("✨ Run Originality & Uniqueness Audit", type="primary", use_container_width=True):
+                orig_checker = OriginalityChecker(api_key=api_key_input.strip() or config.GEMINI_API_KEY)
+                with st.spinner("Screening against classic fairy tale corpus and evaluating creative novelty..."):
+                    try:
+                        o_report = orig_checker.evaluate_story_originality(story)
+                        st.session_state["originality_report"] = o_report
+                        st.success("Originality audit completed!")
+                    except Exception as e:
+                        st.error(f"Originality audit failed: {e}")
+
+        o_report: OriginalityReport = st.session_state.get("originality_report")
+        if o_report:
+            col_o1, col_o2, col_o3 = st.columns(3)
+            col_o1.metric("Originality Score", f"{o_report.originality_score}%")
+            col_o2.metric("Originality Tier", o_report.status)
+            col_o3.metric("Closest Classic Tale", f"{o_report.closest_archetype} ({o_report.similarity_percentage}% match)")
+
+            st.markdown(f"""
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
+                <p><strong>Literature Analysis:</strong> {o_report.analysis}</p>
+                <strong>Unique Highlights & Creative Twists:</strong>
+                <ul>
+                    {"".join([f"<li>{h}</li>" for h in o_report.novelty_highlights])}
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
 
 
 # =========================================================
