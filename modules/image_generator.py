@@ -32,7 +32,7 @@ class ImageGenerator:
         enhanced_prompt = f"{prompt}, storybook illustration, masterpiece, detailed, clear focus, 8k resolution"
         encoded_prompt = urllib.parse.quote(enhanced_prompt)
 
-        url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width={width}&height={height}&nologo=true&model=flux"
+        url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width={width}&height={height}&nologo=true"
         if seed is not None:
             url += f"&seed={seed}"
 
@@ -45,6 +45,23 @@ class ImageGenerator:
             raise RuntimeError(f"Pollinations image generation failed (HTTP {response.status_code}): {response.text[:200]}")
 
         return response.content
+
+    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 768, height: int = 768) -> bytes:
+        """Creates a rich, colorful storybook visual card as an emergency offline fallback."""
+        from PIL import ImageDraw
+        img = Image.new("RGB", (width, height), color=(26, 26, 64))
+        draw = ImageDraw.Draw(img)
+        # Decorative border
+        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=5)
+        draw.rectangle([(30, 30), (width - 30, height - 30)], outline=(199, 210, 254), width=2)
+        # Title and summary
+        draw.text((60, 260), title[:35], fill=(254, 240, 138))
+        draw.text((60, 340), text[:120] + "...", fill=(241, 245, 249))
+        draw.text((60, 480), "Taleora Storybook Illustration", fill=(165, 180, 252))
+        
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return buf.getvalue()
 
     def _generate_hf(self, prompt: str) -> bytes:
         """
@@ -68,6 +85,23 @@ class ImageGenerator:
             raise RuntimeError(f"Hugging Face Inference failed (HTTP {response.status_code}): {response.text[:200]}")
 
         return response.content
+
+    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 768, height: int = 768) -> bytes:
+        """Creates a rich, colorful storybook visual card as an emergency offline fallback."""
+        from PIL import ImageDraw
+        img = Image.new("RGB", (width, height), color=(26, 26, 64))
+        draw = ImageDraw.Draw(img)
+        # Decorative border
+        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=5)
+        draw.rectangle([(30, 30), (width - 30, height - 30)], outline=(199, 210, 254), width=2)
+        # Title and summary
+        draw.text((60, 260), title[:35], fill=(254, 240, 138))
+        draw.text((60, 340), text[:120] + "...", fill=(241, 245, 249))
+        draw.text((60, 480), "Taleora Storybook Illustration", fill=(165, 180, 252))
+        
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return buf.getvalue()
 
     def generate_scene_image(
         self,
@@ -109,12 +143,15 @@ class ImageGenerator:
                 last_error = e
                 # If pollinations fails and HF token is present, fallback to HF
                 if self.hf_token:
-                    image_bytes = self._generate_hf(prompt)
-                else:
-                    raise RuntimeError(f"Image generation failed: {last_error}")
+                    try:
+                        image_bytes = self._generate_hf(prompt)
+                    except Exception:
+                        pass
+                if not image_bytes:
+                    image_bytes = self._create_stylized_card(scene.title, scene.narrative_text, prompt)
 
         if not image_bytes:
-            raise RuntimeError(f"Failed to retrieve image data: {last_error}")
+            image_bytes = self._create_stylized_card(scene.title, scene.narrative_text, prompt)
 
         # Validate image content with Pillow and save
         try:

@@ -1,0 +1,79 @@
+{
+  "title": "Barnaby and the Whispering Key",
+  "logline": "A curious clockwork owl discovers a floating key that unlocks an attic filled with forgotten living stories.",
+  "genre": "Fantasy",
+  "target_audience": "Kids (Ages 6-8)",
+  "keywords": [
+    "Clockwork Owl",
+    "Floating Key",
+    "Secret Attic Library"
+  ],
+  "character_bible": [
+    {
+      "name": "Barnaby",
+      "role": "Protagonist",
+      "visual_appearance": "small brown barn owl crafted with polished bronze gears and soft golden feathers",
+      "signature_clothing": "cozy forest-green wool scarf fastened with a tiny brass acorn pin",
+      "distinct_accessories": "gleaming round monocle over his curious right amber eye",
+      "personality_trait": "curious, punctual, and deeply loyal"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Clockwork Attic",
+      "narrative_text": "High above the sleepy village of Oakhaven, Barnaby fluttered his bronze feathers across stacks of ancient leather-bound books in the secret attic library.",
+      "audio_script": "High above the sleepy village of Oakhaven, Barnaby fluttered his bronze feathers across stacks of ancient leather-bound books in the secret attic library.",
+      "characters_present": [
+        "Barnaby"
+      ],
+      "image_prompt": "whimsical storybook illustration, cozy sunlit attic library filled with antique books and clocks, Barnaby (small bronze owl with golden feathers, wearing forest-green wool scarf with brass acorn pin, round monocle over right eye), warm golden dust motes in sunbeam, storybook art",
+      "music_mood": "whimsical ticking clockwork"
+    },
+    {
+      "scene_number": 2,
+      "title": "The Floating Key",
+      "narrative_text": "Beneath an antique grandfather clock, a soft golden light shimmered. Suspended in mid-air was an ornate brass key humming with quiet enchantment.",
+      "audio_script": "Beneath an antique grandfather clock, a soft golden light shimmered. Suspended in mid-air was an ornate brass key humming with quiet enchantment.",
+      "characters_present": [
+        "Barnaby"
+      ],
+      "image_prompt": "whimsical storybook illustration, antique grandfather clock in warm attic, glowing ornate brass key floating in mid-air, Barnaby (small bronze owl with golden feathers, forest-green scarf, monocle) looking with wonder, magical sparkles, storybook art",
+      "music_mood": "gentle mystery and wonder"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Secret Doorway",
+      "narrative_text": "Guided by the key's gentle glow, Barnaby discovered a hidden keyhole carved into the spine of a massive indigo encyclopedia of forgotten tales.",
+      "audio_script": "Guided by the key's gentle glow, Barnaby discovered a hidden keyhole carved into the spine of a massive indigo encyclopedia of forgotten tales.",
+      "characters_present": [
+        "Barnaby"
+      ],
+      "image_prompt": "whimsical storybook illustration, Barnaby (small bronze owl, forest-green scarf, monocle) inserting glowing brass key into a giant indigo book with ornate gold filigree, soft blue and golden light spilling from the opening door, storybook art",
+      "music_mood": "curious exploration"
+    },
+    {
+      "scene_number": 4,
+      "title": "The Garden of Lost Stories",
+      "narrative_text": "The book opened into an enchanted indoor conservatory where paper birds sang and forgotten stories bloomed like luminous lanterns among emerald leaves.",
+      "audio_script": "The book opened into an enchanted indoor conservatory where paper birds sang and forgotten stories bloomed like luminous lanterns among emerald leaves.",
+      "characters_present": [
+        "Barnaby"
+      ],
+      "image_prompt": "whimsical storybook illustration, magical indoor conservatory garden made of paper flowers and glowing lantern fruit, Barnaby the bronze owl perched on a branch, origami birds flying, rich magical colors, storybook art",
+      "music_mood": "lush orchestral wonder"
+    },
+    {
+      "scene_number": 5,
+      "title": "The Keeper of Wonder",
+      "narrative_text": "Barnaby realized that every story needed a reader to bring it back to life. With a joyful flutter, he vowed to share the magic with every child in the village.",
+      "audio_script": "Barnaby realized that every story needed a reader to bring it back to life. With a joyful flutter, he vowed to share the magic with every child in the village.",
+      "characters_present": [
+        "Barnaby"
+      ],
+      "image_prompt": "whimsical storybook illustration, Barnaby (small bronze owl, forest-green scarf, monocle) surrounded by open glowing storybooks, warm radiant sunlight streaming into the attic library, peaceful happy ending, storybook art",
+      "music_mood": "uplifting heartwarming resolution"
+    }
+  ],
+  "moral_or_takeaway": "Curiosity opens doors, but sharing our stories brings true magic to life."
+}

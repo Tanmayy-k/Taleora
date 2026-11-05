@@ -226,7 +226,7 @@ with st.sidebar:
 
 
 # ---------------------------------------------------------
-# Hero Banner
+# Hero Banner & Showcase
 # ---------------------------------------------------------
 st.markdown("""
 <div class="hero-container">
@@ -234,6 +234,28 @@ st.markdown("""
     <div class="hero-subtitle">Transform three keywords into a fully illustrated, narrated, and verified storybook.</div>
 </div>
 """, unsafe_allow_html=True)
+
+# Quick Showcase Selector for College Demonstrations
+c_feat1, c_feat2 = st.columns(2)
+with c_feat1:
+    if st.button("🦉 Load Story 1: Barnaby & the Whispering Key (Fantasy • Ages 6-8)", use_container_width=True):
+        for f in saved_files:
+            if "Barnaby" in f.name:
+                st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
+                st.session_state["verification_results"] = {}
+                st.success("Loaded Story 1: Barnaby and the Whispering Key!")
+                st.rerun()
+
+with c_feat2:
+    if st.button("🚀 Load Story 2: Astro & the Singing Asteroid (Sci-Fi • Ages 9-12)", use_container_width=True):
+        for f in saved_files:
+            if "Astro" in f.name:
+                st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
+                st.session_state["verification_results"] = {}
+                st.success("Loaded Story 2: Astro and the Singing Asteroid!")
+                st.rerun()
+
+st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
 
 
 # Path helper functions

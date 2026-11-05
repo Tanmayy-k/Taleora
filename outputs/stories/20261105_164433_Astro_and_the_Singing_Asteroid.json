@@ -1,0 +1,79 @@
+{
+  "title": "Astro and the Singing Asteroid",
+  "logline": "A daring pocket robot follows a starlight compass into deep space to heal a singing asteroid that guides lost travelers.",
+  "genre": "Sci-Fi",
+  "target_audience": "Middle Grade (Ages 9-12)",
+  "keywords": [
+    "Pocket Robot",
+    "Starlight Compass",
+    "Singing Asteroid"
+  ],
+  "character_bible": [
+    {
+      "name": "Astro",
+      "role": "Protagonist",
+      "visual_appearance": "palm-sized explorer robot with brushed sky-blue chrome plating and expressive round teal optics",
+      "signature_clothing": "utility belt made of solar-yellow synthetic weave with magnetic pouches",
+      "distinct_accessories": "glowing bronze starlight compass antenna on his crown",
+      "personality_trait": "inventive, optimistic, and quick-thinking"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Drifting in the Nebula",
+      "narrative_text": "Astro hummed softly as his small scout ship coasted through the iridescent lilac clouds of the Orion Nebula, scanning for rare cosmic frequencies.",
+      "audio_script": "Astro hummed softly as his small scout ship coasted through the iridescent lilac clouds of the Orion Nebula, scanning for rare cosmic frequencies.",
+      "characters_present": [
+        "Astro"
+      ],
+      "image_prompt": "retro-futuristic storybook art, cozy spaceship cockpit overlooking glowing purple nebula and twinkling stars, Astro (palm-sized sky-blue robot with round teal eyes and yellow belt), starlight compass glowing, sleek futuristic shapes, storybook art",
+      "music_mood": "ambient cosmic synthesizer"
+    },
+    {
+      "scene_number": 2,
+      "title": "The Song of the Stars",
+      "narrative_text": "Suddenly, his starlight compass spun wildly. A warm melody echoed through his communication console—gentle chimes carrying a rhythmic galactic song.",
+      "audio_script": "Suddenly, his starlight compass spun wildly. A warm melody echoed through his communication console, gentle chimes carrying a rhythmic galactic song.",
+      "characters_present": [
+        "Astro"
+      ],
+      "image_prompt": "retro-futuristic storybook art, Astro the sky-blue robot looking at glowing soundwaves on a holographic screen, starlight compass on his crown pulsing with golden light, starry space vista outside cockpit, storybook art",
+      "music_mood": "mysterious celestial bells"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Crystalline Wanderer",
+      "narrative_text": "Following the soundwaves, Astro encountered an ancient asteroid covered in glowing blue harmonic crystals that resonated with every passing solar wind.",
+      "audio_script": "Following the soundwaves, Astro encountered an ancient asteroid covered in glowing blue harmonic crystals that resonated with every passing solar wind.",
+      "characters_present": [
+        "Astro"
+      ],
+      "image_prompt": "retro-futuristic storybook art, majestic floating asteroid covered in giant glowing sapphire crystals in deep space, Astro the small robot floating gently with magnetic thrusters, cosmic glow, vibrant, storybook art",
+      "music_mood": "resonant crystalline pads"
+    },
+    {
+      "scene_number": 4,
+      "title": "A Broken Harmony",
+      "narrative_text": "Astro noticed a rogue meteor had jammed the central crystalline spire. With careful robotic precision and his toolkit, he cleared the obstruction and tuned the crystal node.",
+      "audio_script": "Astro noticed a rogue meteor had jammed the central crystalline spire. With careful robotic precision and his toolkit, he cleared the obstruction and tuned the crystal node.",
+      "characters_present": [
+        "Astro"
+      ],
+      "image_prompt": "retro-futuristic storybook art, Astro the sky-blue robot using tiny laser toolkit on glowing crystal spire on asteroid surface, dazzling blue and gold light beams radiating into space, storybook art",
+      "music_mood": "dynamic rhythmic tension"
+    },
+    {
+      "scene_number": 5,
+      "title": "The Symphony of the Cosmos",
+      "narrative_text": "The asteroid burst into full celestial melody, guiding lost starships safely through the nebula. Astro smiled, his compass spinning in perfect harmony with the galaxy.",
+      "audio_script": "The asteroid burst into full celestial melody, guiding lost starships safely through the nebula. Astro smiled, his compass spinning in perfect harmony with the galaxy.",
+      "characters_present": [
+        "Astro"
+      ],
+      "image_prompt": "retro-futuristic storybook art, Astro sitting happily atop glowing singing asteroid, brilliant beams of melodic light reaching distant friendly starships, vast colorful cosmic horizon, triumph and peace, storybook art",
+      "music_mood": "triumphant celestial orchestra"
+    }
+  ],
+  "moral_or_takeaway": "When we listen closely and repair what is broken, our actions create harmony across the universe."
+}
