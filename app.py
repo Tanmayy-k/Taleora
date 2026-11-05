@@ -1,6 +1,6 @@
 """
 Taleora — Illustrated Audio Storybook Generator
-Main Streamlit Application (Phase 2: U1, U2, & U3 Complete)
+Main Streamlit Application (Phase 3: U1, U2, U3, & U4 Complete)
 """
 import streamlit as st
 import json
@@ -13,6 +13,9 @@ from modules.character_manager import format_character_bible_markdown
 from modules.story_generator import StoryGenerator, sanitize_filename
 from modules.image_generator import ImageGenerator
 from modules.blip_verifier import BLIPVerifier
+from modules.audio_generator import AudioGenerator
+from modules.music_generator import MusicGenerator
+from modules.export_manager import ExportManager
 
 # ---------------------------------------------------------
 # Page Configuration & Styling
@@ -136,6 +139,15 @@ st.markdown("""
         font-weight: 700;
         display: inline-block;
     }
+
+    .export-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -161,7 +173,7 @@ with st.sidebar:
         "Hugging Face Token (Optional)",
         value=config.HF_TOKEN,
         type="password",
-        help="Recommended for cloud BLIP & HF SDXL models."
+        help="Recommended for cloud BLIP & HF SDXL/MusicGen models."
     )
 
     selected_model = st.selectbox(
@@ -176,6 +188,13 @@ with st.sidebar:
         format_func=lambda x: "Pollinations (Fast & Free, No Key)" if x == "pollinations" else "Hugging Face SDXL (Requires HF Token)",
         index=0
     )
+
+    selected_voice = st.selectbox(
+        "TTS Narrator Voice (U4)",
+        options=list(config.TTS_VOICES.keys()),
+        index=0
+    )
+    voice_code = config.TTS_VOICES[selected_voice]
 
     st.markdown("---")
 
@@ -215,10 +234,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Helper function to get image path for a scene
+# Path helper functions
 def get_scene_image_path(story_title: str, scene_number: int) -> Path:
     safe_title = sanitize_filename(story_title)
     return config.IMAGES_DIR / f"{safe_title}_scene_{scene_number}.png"
+
+def get_scene_audio_path(story_title: str, scene_number: int) -> Path:
+    safe_title = sanitize_filename(story_title)
+    return config.AUDIO_DIR / f"{safe_title}_scene_{scene_number}_narration.mp3"
+
+def get_story_music_path(story_title: str) -> Path:
+    safe_title = sanitize_filename(story_title)
+    return config.AUDIO_DIR / f"{safe_title}_bg_music.wav"
+
+def get_story_pdf_path(story_title: str) -> Path:
+    safe_title = sanitize_filename(story_title)
+    return config.PDFS_DIR / f"{safe_title}_storybook.pdf"
+
+def get_story_video_path(story_title: str) -> Path:
+    safe_title = sanitize_filename(story_title)
+    return config.VIDEOS_DIR / f"{safe_title}_storybook.mp4"
 
 
 # ---------------------------------------------------------
@@ -227,7 +262,7 @@ def get_scene_image_path(story_title: str, scene_number: int) -> Path:
 tabs = st.tabs([
     "📖 Create & Story (U1 & U2)",
     "🎨 Illustrations (U3)",
-    "🎵 Audio & Narration (U4)",
+    "🎵 Audio Experience (U4)",
     "🛡️ Verification & Safety (U3 & U5)",
     "📦 Export & Download (U4)"
 ])
@@ -323,7 +358,6 @@ with tabs[0]:
         st.markdown(f"## 📖 {story.title}")
         st.markdown(f"*{story.logline}*")
 
-        # Story Meta Badges
         kw_html = " ".join([f"<span class='keyword-pill'>🏷️ {k}</span>" for k in story.keywords])
         st.markdown(
             f"**Genre:** `{story.genre}` | **Audience:** `{story.target_audience}`<br>"
@@ -387,7 +421,6 @@ with tabs[1]:
     else:
         story: StoryBook = st.session_state["current_story"]
 
-        # Bulk Generation Controls
         c_gen_all, c_engine_info = st.columns([1, 2])
         with c_gen_all:
             if st.button("🖼️ Generate All Scene Illustrations", type="primary", use_container_width=True):
@@ -420,7 +453,6 @@ with tabs[1]:
 
         st.markdown("---")
 
-        # Display scenes with illustrations
         for scene in story.scenes:
             img_path = get_scene_image_path(story.title, scene.scene_number)
             has_image = img_path.exists()
@@ -439,7 +471,6 @@ with tabs[1]:
                         </div>
                         """, unsafe_allow_html=True)
 
-                    # Regenerate individual scene button
                     regen_key = f"regen_scene_{scene.scene_number}"
                     if st.button(f"🔄 {'Regenerate' if has_image else 'Generate'} Scene {scene.scene_number}", key=regen_key, use_container_width=True):
                         img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
@@ -454,7 +485,6 @@ with tabs[1]:
                                     force_regenerate=True,
                                     seed=new_seed
                                 )
-                                # Clear previous verification for this scene if regenerated
                                 if "verification_results" in st.session_state:
                                     st.session_state["verification_results"].pop(scene.scene_number, None)
                                 st.success(f"Scene {scene.scene_number} updated!")
@@ -474,11 +504,84 @@ with tabs[1]:
 
 
 # =========================================================
-# TAB 3: AUDIO & NARRATION (U4 Preview)
+# TAB 3: AUDIO & NARRATION (U4)
 # =========================================================
 with tabs[2]:
-    st.markdown("### 🎵 Narration (Edge TTS) & Background Music (MusicGen) (Requirement U4)")
-    st.info("Phase 3 will synthesize clean neural narration for each scene and generate instrumental background music loops.")
+    st.markdown("### 🎵 Audio Experience: TTS Narration & Background Music (Requirement U4)")
+    st.caption("Generate neural speech narration with Microsoft Edge TTS and ambient background music with Meta MusicGen.")
+
+    if "current_story" not in st.session_state:
+        st.warning("⚠️ Please generate or load a story first.")
+    else:
+        story: StoryBook = st.session_state["current_story"]
+
+        # Action Buttons
+        c_tts, c_music = st.columns(2)
+        with c_tts:
+            if st.button("🎙️ Generate All Scene Narrations (Edge TTS)", type="primary", use_container_width=True):
+                audio_gen = AudioGenerator(voice=voice_code)
+                with st.spinner(f"Synthesizing narration using voice: {selected_voice}..."):
+                    try:
+                        audio_gen.generate_all_narrations(story, voice=voice_code, force_regenerate=True)
+                        st.success("All scene narrations synthesized successfully!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Narration generation failed: {e}")
+
+        with c_music:
+            if st.button("🎶 Generate Instrumental Background Music (MusicGen)", use_container_width=True):
+                music_gen = MusicGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                with st.spinner("Synthesizing ambient background music..."):
+                    try:
+                        m_path, m_model = music_gen.generate_story_music(story, duration_seconds=25, force_regenerate=True)
+                        st.session_state["music_model_used"] = m_model
+                        st.success(f"Background music generated using: {m_model}!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Music generation failed: {e}")
+
+        st.markdown("---")
+
+        # Background Music Player
+        music_file = get_story_music_path(story.title)
+        if music_file.exists():
+            st.markdown(f"#### 🎵 Story Theme Music ({st.session_state.get('music_model_used', 'Harmonic Ambient')})")
+            st.audio(str(music_file))
+            st.markdown("---")
+
+        # Scene-by-Scene Audio Players
+        st.markdown("#### 🎧 Scene Narration Audio Clips")
+        for scene in story.scenes:
+            audio_path = get_scene_audio_path(story.title, scene.scene_number)
+            img_path = get_scene_image_path(story.title, scene.scene_number)
+
+            col_a_img, col_a_play = st.columns([1, 2.5], gap="medium")
+            with col_a_img:
+                if img_path.exists():
+                    st.image(str(img_path), caption=f"Scene {scene.scene_number}", use_container_width=True)
+                else:
+                    st.caption(f"Scene {scene.scene_number}")
+
+            with col_a_play:
+                st.markdown(f"**Scene {scene.scene_number}: {scene.title}**")
+                st.markdown(f"*{scene.audio_script or scene.narrative_text}*")
+
+                if audio_path.exists():
+                    st.audio(str(audio_path))
+                else:
+                    st.caption("🎙️ Narration audio not generated yet.")
+
+                if st.button(f"🔄 Voicing Scene {scene.scene_number}", key=f"voice_sc_{scene.scene_number}"):
+                    audio_gen = AudioGenerator(voice=voice_code)
+                    with st.spinner(f"Voicing Scene {scene.scene_number}..."):
+                        try:
+                            audio_gen.generate_scene_narration(scene, story.title, voice=voice_code, force_regenerate=True)
+                            st.success(f"Scene {scene.scene_number} audio ready!")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Failed to generate audio: {e}")
+
+            st.markdown("---")
 
 
 # =========================================================
@@ -493,7 +596,6 @@ with tabs[3]:
     else:
         story: StoryBook = st.session_state["current_story"]
 
-        # Check which images exist
         scenes_with_images = [
             s for s in story.scenes if get_scene_image_path(story.title, s.scene_number).exists()
         ]
@@ -504,9 +606,11 @@ with tabs[3]:
             if "verification_results" not in st.session_state:
                 st.session_state["verification_results"] = {}
 
-            # Button to run BLIP verification
             if st.button("🔍 Run Salesforce BLIP Verification on Generated Illustrations", type="primary"):
-                verifier = BLIPVerifier(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                verifier = BLIPVerifier(
+                    hf_token=hf_token_input.strip() or config.HF_TOKEN,
+                    gemini_api_key=api_key_input.strip() or config.GEMINI_API_KEY
+                )
                 with st.spinner("🤖 Inspecting illustrations with Salesforce BLIP and calculating alignment scores..."):
                     for sc in scenes_with_images:
                         img_path = get_scene_image_path(story.title, sc.scene_number)
@@ -520,7 +624,6 @@ with tabs[3]:
                         st.session_state["verification_results"][sc.scene_number] = res
                     st.success("BLIP verification complete!")
 
-            # Display verification summary & cards if available
             v_results = st.session_state.get("verification_results", {})
             if v_results:
                 total_verified = sum(1 for r in v_results.values() if r["status"] == "VERIFIED")
@@ -535,7 +638,6 @@ with tabs[3]:
 
                 st.markdown("---")
 
-                # Detailed scene-by-scene verification cards
                 for scene in story.scenes:
                     if scene.scene_number in v_results:
                         res = v_results[scene.scene_number]
@@ -556,6 +658,7 @@ with tabs[3]:
 
                                 st.markdown(f"**Intended Scene Narrative:**<br>*{scene.narrative_text}*", unsafe_allow_html=True)
                                 st.markdown(f"**BLIP Generated Caption:**<br>`{res['blip_caption']}`", unsafe_allow_html=True)
+                                st.caption(f"Inspection Model: *{res['model_used']}*")
 
                                 if res["matched_tokens"]:
                                     st.markdown(f"**Matched Visual Elements:** `{', '.join(res['matched_tokens'])}`")
@@ -582,8 +685,90 @@ with tabs[3]:
 
 
 # =========================================================
-# TAB 5: EXPORT & DOWNLOAD (U4 Preview)
+# TAB 5: EXPORT & DOWNLOAD (U4)
 # =========================================================
 with tabs[4]:
-    st.markdown("### 📦 Export Storybook as PDF & MP4 Video (Requirement U4)")
-    st.info("Phase 3 will render an illustrated PDF storybook using ReportLab and an assembled MP4 video using MoviePy + FFmpeg.")
+    st.markdown("### 📦 Multi-Format Export: Illustrated PDF & MP4 Video (Requirement U4)")
+    st.caption("Generate publication-ready illustrated PDF storybooks and synchronized MP4 audio-video presentations.")
+
+    if "current_story" not in st.session_state:
+        st.warning("⚠️ Please generate or load a story first.")
+    else:
+        story: StoryBook = st.session_state["current_story"]
+
+        c_pdf_col, c_video_col = st.columns(2, gap="large")
+
+        # ---------------- PDF EXPORT ----------------
+        with c_pdf_col:
+            st.markdown("""
+            <div class="export-box">
+                <h3>📄 Illustrated PDF Storybook</h3>
+                <p>Full-color storybook containing the cover page, character profiles, scene-by-scene high-res illustrations, and story text formatted via ReportLab.</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            pdf_path = get_story_pdf_path(story.title)
+            pdf_exists = pdf_path.exists()
+
+            if st.button("🎨 Build Illustrated PDF Storybook", type="primary", use_container_width=True):
+                with st.spinner("Compiling illustrated PDF storybook with ReportLab..."):
+                    try:
+                        built_pdf = ExportManager.generate_pdf_storybook(story, force_regenerate=True)
+                        st.success("PDF Storybook compiled successfully!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to generate PDF: {e}")
+
+            if pdf_exists:
+                file_size_kb = int(pdf_path.stat().st_size / 1024)
+                st.caption(f"Status: **Ready** • File Size: ~{file_size_kb} KB")
+                with open(pdf_path, "rb") as f:
+                    st.download_button(
+                        label="📥 Download Illustrated PDF",
+                        data=f.read(),
+                        file_name=f"{sanitize_filename(story.title)}_storybook.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+
+        # ---------------- MP4 EXPORT ----------------
+        with c_video_col:
+            st.markdown("""
+            <div class="export-box">
+                <h3>🎬 Complete MP4 Video</h3>
+                <p>Synchronized video combining high-resolution scene illustrations, Edge TTS neural narration, and gentle background music assembled via MoviePy & FFmpeg.</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            video_path = get_story_video_path(story.title)
+            video_exists = video_path.exists()
+
+            if st.button("🎥 Render Assembled MP4 Storybook Video", type="primary", use_container_width=True):
+                music_file = get_story_music_path(story.title)
+                bg_music_arg = music_file if music_file.exists() else None
+
+                with st.spinner("Assembling scenes, voice narration, and background music into MP4 (MoviePy)..."):
+                    try:
+                        built_video = ExportManager.generate_mp4_video(
+                            story=story,
+                            bg_music_path=bg_music_arg,
+                            force_regenerate=True
+                        )
+                        st.success("MP4 Video successfully rendered!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to render video: {e}")
+
+            if video_exists:
+                vid_size_mb = round(video_path.stat().st_size / (1024 * 1024), 2)
+                st.caption(f"Status: **Ready** • File Size: ~{vid_size_mb} MB")
+                st.video(str(video_path))
+
+                with open(video_path, "rb") as f:
+                    st.download_button(
+                        label="📥 Download Storybook MP4 Video",
+                        data=f.read(),
+                        file_name=f"{sanitize_filename(story.title)}_storybook.mp4",
+                        mime="video/mp4",
+                        use_container_width=True
+                    )
