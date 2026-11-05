@@ -22,3 +22,4 @@ imageio-ffmpeg>=0.4.9
 # Verification & Audio processing helpers
 numpy>=1.24.0,<2.0.0
 scipy>=1.11.0
+transformers>=4.40.0

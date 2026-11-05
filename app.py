@@ -1,15 +1,18 @@
 """
 Taleora — Illustrated Audio Storybook Generator
-Main Streamlit Application (Phase 1)
+Main Streamlit Application (Phase 2: U1, U2, & U3 Complete)
 """
 import streamlit as st
 import json
 from pathlib import Path
+from PIL import Image
 
 import config
 from modules.prompt_engine import validate_keywords, StoryBook
 from modules.character_manager import format_character_bible_markdown
-from modules.story_generator import StoryGenerator
+from modules.story_generator import StoryGenerator, sanitize_filename
+from modules.image_generator import ImageGenerator
+from modules.blip_verifier import BLIPVerifier
 
 # ---------------------------------------------------------
 # Page Configuration & Styling
@@ -26,7 +29,6 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap');
 
-    /* Global typography */
     html, body, [class*="css"] {
         font-family: 'Quicksand', sans-serif;
     }
@@ -61,7 +63,6 @@ st.markdown("""
         margin-bottom: 0;
     }
 
-    /* Card styling */
     .story-card {
         background: #ffffff;
         border-radius: 14px;
@@ -69,11 +70,6 @@ st.markdown("""
         border: 1px solid #e2e8f0;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-bottom: 1.2rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .story-card:hover {
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
 
     .character-badge {
@@ -120,6 +116,26 @@ st.markdown("""
         font-weight: 600;
         margin: 0.2rem;
     }
+
+    .status-verified {
+        background-color: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    .status-flagged {
+        background-color: #fff1f2;
+        color: #9f1239;
+        border: 1px solid #fecdd3;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-block;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -141,9 +157,23 @@ with st.sidebar:
         help="Get a free key from Google AI Studio: https://aistudio.google.com/"
     )
 
+    hf_token_input = st.text_input(
+        "Hugging Face Token (Optional)",
+        value=config.HF_TOKEN,
+        type="password",
+        help="Recommended for cloud BLIP & HF SDXL models."
+    )
+
     selected_model = st.selectbox(
         "Gemini Model",
         options=["gemini-2.0-flash", "gemini-1.5-flash"],
+        index=0
+    )
+
+    image_engine = st.selectbox(
+        "Image Generation Engine (U3)",
+        options=["pollinations", "huggingface"],
+        format_func=lambda x: "Pollinations (Fast & Free, No Key)" if x == "pollinations" else "Hugging Face SDXL (Requires HF Token)",
         index=0
     )
 
@@ -163,6 +193,7 @@ with st.sidebar:
                 try:
                     loaded = StoryGenerator.load_story_from_disk(story_options[chosen_filename])
                     st.session_state["current_story"] = loaded
+                    st.session_state["verification_results"] = {}
                     st.success(f"Loaded '{loaded.title}'!")
                 except Exception as e:
                     st.error(f"Failed to load story: {e}")
@@ -182,6 +213,12 @@ st.markdown("""
     <div class="hero-subtitle">Transform three keywords into a fully illustrated, narrated, and verified storybook.</div>
 </div>
 """, unsafe_allow_html=True)
+
+
+# Helper function to get image path for a scene
+def get_scene_image_path(story_title: str, scene_number: int) -> Path:
+    safe_title = sanitize_filename(story_title)
+    return config.IMAGES_DIR / f"{safe_title}_scene_{scene_number}.png"
 
 
 # ---------------------------------------------------------
@@ -273,6 +310,7 @@ with tabs[0]:
                             extra_notes=extra_notes
                         )
                         st.session_state["current_story"] = story
+                        st.session_state["verification_results"] = {}
                         st.success(f"🎉 Generated story: **{story.title}**!")
                     except Exception as e:
                         st.error(f"❌ Story generation failed: {e}")
@@ -333,21 +371,106 @@ with tabs[0]:
                 </div>
                 """, unsafe_allow_html=True)
 
-        # Raw JSON expander for validation
         with st.expander("🔍 Inspect Structured JSON Output (Requirement U2)"):
             st.json(story.model_dump())
 
 
 # =========================================================
-# TAB 2: ILLUSTRATIONS (U3 Preview)
+# TAB 2: ILLUSTRATIONS (U3)
 # =========================================================
 with tabs[1]:
-    st.markdown("### 🎨 Scene Image Generation & Verification (Requirement U3)")
-    st.info("Phase 2 will implement multi-provider image generation (Hugging Face / Pollinations) and Salesforce BLIP caption verification.")
-    if "current_story" in st.session_state:
-        st.write(f"Ready to illustrate **{len(st.session_state['current_story'].scenes)}** scenes for story: *{st.session_state['current_story'].title}*.")
+    st.markdown("### 🎨 Scene Image Generation (Requirement U3)")
+    st.caption("Generate high-resolution illustrations for each scene while maintaining character consistency.")
+
+    if "current_story" not in st.session_state:
+        st.warning("⚠️ Please generate or load a story in the 'Create & Story' tab first.")
     else:
-        st.warning("Please generate a story in the first tab to view scene image prompts.")
+        story: StoryBook = st.session_state["current_story"]
+
+        # Bulk Generation Controls
+        c_gen_all, c_engine_info = st.columns([1, 2])
+        with c_gen_all:
+            if st.button("🖼️ Generate All Scene Illustrations", type="primary", use_container_width=True):
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
+                def update_progress(curr, total, msg):
+                    progress_bar.progress(curr / total)
+                    status_text.text(msg)
+
+                img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                with st.spinner("Generating illustrations..."):
+                    try:
+                        results = img_gen.generate_all_scenes(
+                            story=story,
+                            engine=image_engine,
+                            progress_callback=update_progress,
+                            force_regenerate=True
+                        )
+                        progress_bar.progress(1.0)
+                        status_text.text("✨ All illustrations generated successfully!")
+                        st.success("All illustrations ready!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Generation error: {e}")
+
+        with c_engine_info:
+            st.info(f"Using engine: **{image_engine.capitalize()}**. "
+                    f"Generated images are cached in `outputs/images/` and reused automatically.")
+
+        st.markdown("---")
+
+        # Display scenes with illustrations
+        for scene in story.scenes:
+            img_path = get_scene_image_path(story.title, scene.scene_number)
+            has_image = img_path.exists()
+
+            with st.container():
+                st.markdown(f"#### Scene {scene.scene_number}: {scene.title}")
+                col_img, col_desc = st.columns([1, 1], gap="medium")
+
+                with col_img:
+                    if has_image:
+                        st.image(str(img_path), caption=f"Scene {scene.scene_number} Illustration", use_container_width=True)
+                    else:
+                        st.markdown("""
+                        <div style="background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; height: 320px; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: 600;">
+                            🖼️ Illustration not yet generated
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                    # Regenerate individual scene button
+                    regen_key = f"regen_scene_{scene.scene_number}"
+                    if st.button(f"🔄 {'Regenerate' if has_image else 'Generate'} Scene {scene.scene_number}", key=regen_key, use_container_width=True):
+                        img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                        with st.spinner(f"Generating illustration for Scene {scene.scene_number}..."):
+                            try:
+                                import random
+                                new_seed = random.randint(1000, 999999)
+                                img_gen.generate_scene_image(
+                                    scene=scene,
+                                    story_title=story.title,
+                                    engine=image_engine,
+                                    force_regenerate=True,
+                                    seed=new_seed
+                                )
+                                # Clear previous verification for this scene if regenerated
+                                if "verification_results" in st.session_state:
+                                    st.session_state["verification_results"].pop(scene.scene_number, None)
+                                st.success(f"Scene {scene.scene_number} updated!")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Failed to generate image: {e}")
+
+                with col_desc:
+                    st.markdown(f"**Narrative Text:**<br>{scene.narrative_text}", unsafe_allow_html=True)
+                    st.markdown(f"**Characters Present:** `{', '.join(scene.characters_present) if scene.characters_present else 'None'}`")
+                    st.markdown(f"**Music Mood:** *{scene.music_mood}*")
+
+                    with st.expander("View Image Prompt (Character Consistency Applied)"):
+                        st.code(scene.image_prompt, language="text")
+
+                st.markdown("---")
 
 
 # =========================================================
@@ -359,11 +482,103 @@ with tabs[2]:
 
 
 # =========================================================
-# TAB 4: VERIFICATION & SAFETY (U3 & U5 Preview)
+# TAB 4: VERIFICATION & SAFETY (U3 & U5)
 # =========================================================
 with tabs[3]:
-    st.markdown("### 🛡️ BLIP Verification, Child Safety & Originality Check (U3 & U5)")
-    st.info("Phase 4 will inspect generated illustrations with BLIP image captioning, run child-safe content verification, and check story originality.")
+    st.markdown("### 🛡️ BLIP Image Captioning & Narrative Verification (Requirement U3)")
+    st.caption("Salesforce BLIP inspects each generated image and evaluates visual-semantic alignment against the story.")
+
+    if "current_story" not in st.session_state:
+        st.warning("⚠️ Please generate or load a story first.")
+    else:
+        story: StoryBook = st.session_state["current_story"]
+
+        # Check which images exist
+        scenes_with_images = [
+            s for s in story.scenes if get_scene_image_path(story.title, s.scene_number).exists()
+        ]
+
+        if not scenes_with_images:
+            st.warning("⚠️ No scene illustrations found. Please generate illustrations in the 'Illustrations' tab first.")
+        else:
+            if "verification_results" not in st.session_state:
+                st.session_state["verification_results"] = {}
+
+            # Button to run BLIP verification
+            if st.button("🔍 Run Salesforce BLIP Verification on Generated Illustrations", type="primary"):
+                verifier = BLIPVerifier(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                with st.spinner("🤖 Inspecting illustrations with Salesforce BLIP and calculating alignment scores..."):
+                    for sc in scenes_with_images:
+                        img_path = get_scene_image_path(story.title, sc.scene_number)
+                        res = verifier.verify_scene_image(
+                            scene_number=sc.scene_number,
+                            image_path=img_path,
+                            intended_text=sc.narrative_text,
+                            image_prompt=sc.image_prompt,
+                            characters_expected=sc.characters_present
+                        )
+                        st.session_state["verification_results"][sc.scene_number] = res
+                    st.success("BLIP verification complete!")
+
+            # Display verification summary & cards if available
+            v_results = st.session_state.get("verification_results", {})
+            if v_results:
+                total_verified = sum(1 for r in v_results.values() if r["status"] == "VERIFIED")
+                total_flagged = sum(1 for r in v_results.values() if r["status"] == "FLAGGED")
+                avg_score = int(sum(r["similarity_score"] for r in v_results.values()) / max(len(v_results), 1))
+
+                m1, m2, m3, m4 = st.columns(4)
+                m1.metric("Scenes Inspected", len(v_results))
+                m2.metric("Verified (Match)", total_verified)
+                m3.metric("Flagged (Mismatch)", total_flagged)
+                m4.metric("Avg Alignment Score", f"{avg_score}%")
+
+                st.markdown("---")
+
+                # Detailed scene-by-scene verification cards
+                for scene in story.scenes:
+                    if scene.scene_number in v_results:
+                        res = v_results[scene.scene_number]
+                        img_path = get_scene_image_path(story.title, scene.scene_number)
+
+                        with st.container():
+                            col_thumb, col_details = st.columns([1, 2.5], gap="medium")
+                            with col_thumb:
+                                if img_path.exists():
+                                    st.image(str(img_path), caption=f"Scene {scene.scene_number}", use_container_width=True)
+
+                            with col_details:
+                                status_class = "status-verified" if res["status"] == "VERIFIED" else "status-flagged"
+                                st.markdown(f"""
+                                <h4>Scene {scene.scene_number}: {scene.title}</h4>
+                                <span class="{status_class}">Status: {res['status']} ({res['similarity_score']}% Match)</span>
+                                """, unsafe_allow_html=True)
+
+                                st.markdown(f"**Intended Scene Narrative:**<br>*{scene.narrative_text}*", unsafe_allow_html=True)
+                                st.markdown(f"**BLIP Generated Caption:**<br>`{res['blip_caption']}`", unsafe_allow_html=True)
+
+                                if res["matched_tokens"]:
+                                    st.markdown(f"**Matched Visual Elements:** `{', '.join(res['matched_tokens'])}`")
+                                if res["matched_characters"]:
+                                    st.markdown(f"**Characters Verified:** `{', '.join(res['matched_characters'])}`")
+
+                                st.info(res["recommendation"])
+
+                                if res["status"] == "FLAGGED":
+                                    if st.button(f"🔄 Regenerate Scene {scene.scene_number} Illustration", key=f"fix_scene_{scene.scene_number}"):
+                                        img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
+                                        import random
+                                        img_gen.generate_scene_image(
+                                            scene=scene,
+                                            story_title=story.title,
+                                            engine=image_engine,
+                                            force_regenerate=True,
+                                            seed=random.randint(1000, 999999)
+                                        )
+                                        st.session_state["verification_results"].pop(scene.scene_number, None)
+                                        st.rerun()
+
+                            st.markdown("---")
 
 
 # =========================================================
@@ -371,4 +586,4 @@ with tabs[3]:
 # =========================================================
 with tabs[4]:
     st.markdown("### 📦 Export Storybook as PDF & MP4 Video (Requirement U4)")
-    st.info("Phase 3 & 4 will render an illustrated PDF storybook using ReportLab and an assembled MP4 video using MoviePy + FFmpeg.")
+    st.info("Phase 3 will render an illustrated PDF storybook using ReportLab and an assembled MP4 video using MoviePy + FFmpeg.")
