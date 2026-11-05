@@ -40,8 +40,8 @@ class StoryGenerator:
         """Initializes or retrieves the Google GenAI client."""
         if not self.api_key:
             raise ValueError(
-                "Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file "
-                "or enter it in the Taleora application sidebar."
+                "The storytelling AI is not configured. Please ensure GEMINI_API_KEY is present in your .env file "
+                "or deployment secrets."
             )
         if self._client is None:
             self._client = genai.Client(api_key=self.api_key)
@@ -77,14 +77,55 @@ class StoryGenerator:
             temperature=0.75,
         )
 
-        response = client.models.generate_content(
-            model=self.model_name,
-            contents=user_prompt,
-            config=config_options,
-        )
+        # Model fallback cascade ensuring high availability across versions
+        models_to_try = [
+            self.model_name,
+            "gemini-2.5-flash",
+            "gemini-flash-latest",
+            "gemini-1.5-flash",
+            "gemini-3.8-flash"
+        ]
+        # Deduplicate while preserving order
+        seen = set()
+        deduped_models = [m for m in models_to_try if m and not (m in seen or seen.add(m))]
 
-        if not response.text:
-            raise RuntimeError("Gemini returned an empty response. Please try again.")
+        response = None
+        last_error = None
+
+        for model_candidate in deduped_models:
+            try:
+                response = client.models.generate_content(
+                    model=model_candidate,
+                    contents=user_prompt,
+                    config=config_options,
+                )
+                if response and response.text:
+                    self.model_name = model_candidate
+                    break
+            except Exception as e:
+                last_error = e
+                err_str = str(e).lower()
+                # If 404 (model not found / deprecated), continue to next model in cascade
+                if "404" in err_str or "not found" in err_str or "not available" in err_str:
+                    continue
+                # If 401 unauthenticated, raise user-friendly guidance
+                if "401" in err_str or "unauthenticated" in err_str or "api key not valid" in err_str:
+                    raise RuntimeError(
+                        "Authentication issue: The configured GEMINI_API_KEY in .env was not accepted. "
+                        "Please check your API key from Google AI Studio."
+                    )
+                # If 429 rate limit
+                if "429" in err_str or "quota" in err_str or "rate limit" in err_str:
+                    raise RuntimeError(
+                        "Generation limit temporarily reached. Please wait a moment and try again."
+                    )
+                continue
+
+        if not response or not response.text:
+            raise RuntimeError(
+                f"We could not generate the story right now. Details: {last_error or 'Empty response'}. "
+                "You can also explore our pre-made featured stories below!"
+            )
 
         # Parse JSON into Pydantic StoryBook
         story_data = json.loads(response.text)

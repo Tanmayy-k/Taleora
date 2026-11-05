@@ -116,15 +116,22 @@ Evaluate this story and return a structured JSON report conforming to the Safety
                     temperature=0.2,  # Low temperature for objective safety evaluation
                 )
 
-                response = client.models.generate_content(
-                    model=config.DEFAULT_GEMINI_MODEL,
-                    contents=user_prompt,
-                    config=config_opts
-                )
+                models_to_try = [config.DEFAULT_GEMINI_MODEL, "gemini-2.5-flash", "gemini-flash-latest", "gemini-1.5-flash"]
+                seen = set()
+                deduped = [m for m in models_to_try if m and not (m in seen or seen.add(m))]
 
-                if response.text:
-                    report_data = json.loads(response.text)
-                    return SafetyReport.model_validate(report_data)
+                for m in deduped:
+                    try:
+                        response = client.models.generate_content(
+                            model=m,
+                            contents=user_prompt,
+                            config=config_opts
+                        )
+                        if response and response.text:
+                            report_data = json.loads(response.text)
+                            return SafetyReport.model_validate(report_data)
+                    except Exception:
+                        continue
 
             except Exception:
                 pass  # Fall through to algorithmic evaluation if API call encounters an error

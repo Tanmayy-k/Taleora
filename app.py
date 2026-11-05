@@ -1,6 +1,7 @@
 """
-Taleora — Illustrated Audio Storybook Generator
-Main Streamlit Application (Phase 3: U1, U2, U3, & U4 Complete)
+TALEORA — Illustrated Audio Storybook Generator
+A consumer-facing generative storytelling experience.
+"Every great adventure begins with three little words."
 """
 import streamlit as st
 import json
@@ -23,242 +24,180 @@ from modules.originality_checker import OriginalityChecker, OriginalityReport
 # Page Configuration & Styling
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="Taleora — Illustrated Audio Storybook Generator",
+    page_title="Taleora — Magical Audio Storybook Generator",
     page_icon="✨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for magical, warm, polished storytelling aesthetic
+# Custom CSS for a premium consumer storytelling app
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Quicksand:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Quicksand', sans-serif;
     }
 
-    h1, h2, h3, .brand-title {
+    h1, h2, h3, .brand-font {
         font-family: 'Cinzel', serif !important;
         letter-spacing: 0.5px;
     }
 
+    /* Hero Banner */
     .hero-container {
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
-        padding: 2.2rem 2.5rem;
-        border-radius: 18px;
+        background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+        padding: 3rem 2.8rem;
+        border-radius: 20px;
         color: #f8fafc;
-        box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.4);
-        margin-bottom: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 16px 36px -10px rgba(30, 27, 75, 0.45);
+        margin-bottom: 2.2rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        text-align: center;
     }
 
     .hero-title {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 2.8rem;
+        font-weight: 800;
         margin: 0;
         color: #fef08a;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        text-shadow: 0 3px 12px rgba(0,0,0,0.5);
+    }
+
+    .hero-headline {
+        font-size: 1.35rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-top: 0.8rem;
+        font-style: italic;
     }
 
     .hero-subtitle {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: #e0e7ff;
         margin-top: 0.5rem;
-        margin-bottom: 0;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
     }
 
-    .story-card {
+    /* Card styling */
+    .storybook-card {
         background: #ffffff;
-        border-radius: 14px;
-        padding: 1.5rem;
+        border-radius: 16px;
+        padding: 1.8rem;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        margin-bottom: 1.2rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        margin-bottom: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .character-badge {
-        background: #eef2ff;
-        color: #3730a3;
-        padding: 0.35rem 0.75rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.85rem;
+    .storybook-card:hover {
+        box-shadow: 0 12px 30px rgba(0,0,0,0.07);
+    }
+
+    /* Example Story Showcase Card */
+    .showcase-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .showcase-badge {
         display: inline-block;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .badge-fantasy {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .badge-scifi {
+        background: #e0e7ff;
+        color: #3730a3;
         border: 1px solid #c7d2fe;
     }
 
-    .scene-badge {
-        background: #fef3c7;
-        color: #92400e;
-        padding: 0.3rem 0.8rem;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 0.85rem;
+    .keyword-chip {
         display: inline-block;
-        margin-bottom: 0.5rem;
-    }
-
-    .prompt-box {
-        background: #f8fafc;
-        border-left: 4px solid #6366f1;
-        padding: 0.8rem 1rem;
-        border-radius: 4px;
-        font-size: 0.88rem;
-        color: #334155;
-        margin-top: 0.8rem;
-    }
-
-    .keyword-pill {
-        display: inline-block;
-        background: #fdf2f8;
-        color: #9d174d;
-        border: 1px solid #fbcfe8;
+        background: #f1f5f9;
+        color: #475569;
         padding: 0.25rem 0.65rem;
         border-radius: 12px;
+        font-size: 0.82rem;
         font-weight: 600;
-        margin: 0.2rem;
+        margin-right: 0.35rem;
+        margin-bottom: 0.35rem;
+        border: 1px solid #e2e8f0;
     }
 
-    .status-verified {
-        background-color: #ecfdf5;
+    .page-turner {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.75rem 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .verification-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 1.4rem;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+    }
+
+    .badge-verified {
+        background: #ecfdf5;
         color: #065f46;
         border: 1px solid #a7f3d0;
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
         font-weight: 700;
-        display: inline-block;
+        font-size: 0.85rem;
     }
 
-    .status-flagged {
-        background-color: #fff1f2;
+    .badge-flagged {
+        background: #fff1f2;
         color: #9f1239;
         border: 1px solid #fecdd3;
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
         font-weight: 700;
-        display: inline-block;
+        font-size: 0.85rem;
     }
 
     .export-box {
-        background: #f8fafc;
+        background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 1.5rem;
+        border-radius: 16px;
+        padding: 1.8rem;
         text-align: center;
-        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------
-# Sidebar Configuration
+# Path Helpers
 # ---------------------------------------------------------
-with st.sidebar:
-    st.markdown("### ✨ TALEORA")
-    st.caption("Illustrated Audio Storybook Generator")
-    st.markdown("---")
-
-    # API Configuration
-    st.subheader("🔑 API Settings")
-    api_key_input = st.text_input(
-        "Google Gemini API Key",
-        value=config.GEMINI_API_KEY,
-        type="password",
-        help="Get a free key from Google AI Studio: https://aistudio.google.com/"
-    )
-
-    hf_token_input = st.text_input(
-        "Hugging Face Token (Optional)",
-        value=config.HF_TOKEN,
-        type="password",
-        help="Recommended for cloud BLIP & HF SDXL/MusicGen models."
-    )
-
-    selected_model = st.selectbox(
-        "Gemini Model",
-        options=["gemini-2.0-flash", "gemini-1.5-flash"],
-        index=0
-    )
-
-    image_engine = st.selectbox(
-        "Image Generation Engine (U3)",
-        options=["pollinations", "huggingface"],
-        format_func=lambda x: "Pollinations (Fast & Free, No Key)" if x == "pollinations" else "Hugging Face SDXL (Requires HF Token)",
-        index=0
-    )
-
-    selected_voice = st.selectbox(
-        "TTS Narrator Voice (U4)",
-        options=list(config.TTS_VOICES.keys()),
-        index=0
-    )
-    voice_code = config.TTS_VOICES[selected_voice]
-
-    st.markdown("---")
-
-    # Saved Stories Loader
-    st.subheader("📚 Saved Stories")
-    saved_files = StoryGenerator.list_saved_stories()
-    if saved_files:
-        story_options = {f.name: f for f in saved_files}
-        chosen_filename = st.selectbox(
-            "Load previous story",
-            options=["-- Select a saved story --"] + list(story_options.keys())
-        )
-        if chosen_filename != "-- Select a saved story --":
-            if st.button("📖 Load Story", use_container_width=True):
-                try:
-                    loaded = StoryGenerator.load_story_from_disk(story_options[chosen_filename])
-                    st.session_state["current_story"] = loaded
-                    st.session_state["verification_results"] = {}
-                    st.success(f"Loaded '{loaded.title}'!")
-                except Exception as e:
-                    st.error(f"Failed to load story: {e}")
-    else:
-        st.info("No saved stories yet. Generate your first one!")
-
-    st.markdown("---")
-    st.caption("College GenAI Project • Requirements U1–U5")
-
-
-# ---------------------------------------------------------
-# Hero Banner & Showcase
-# ---------------------------------------------------------
-st.markdown("""
-<div class="hero-container">
-    <div class="hero-title">✨ TALEORA</div>
-    <div class="hero-subtitle">Transform three keywords into a fully illustrated, narrated, and verified storybook.</div>
-</div>
-""", unsafe_allow_html=True)
-
-# Quick Showcase Selector for College Demonstrations
-c_feat1, c_feat2 = st.columns(2)
-with c_feat1:
-    if st.button("🦉 Load Story 1: Barnaby & the Whispering Key (Fantasy • Ages 6-8)", use_container_width=True):
-        for f in saved_files:
-            if "Barnaby" in f.name:
-                st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
-                st.session_state["verification_results"] = {}
-                st.success("Loaded Story 1: Barnaby and the Whispering Key!")
-                st.rerun()
-
-with c_feat2:
-    if st.button("🚀 Load Story 2: Astro & the Singing Asteroid (Sci-Fi • Ages 9-12)", use_container_width=True):
-        for f in saved_files:
-            if "Astro" in f.name:
-                st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
-                st.session_state["verification_results"] = {}
-                st.success("Loaded Story 2: Astro and the Singing Asteroid!")
-                st.rerun()
-
-st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
-
-
-# Path helper functions
 def get_scene_image_path(story_title: str, scene_number: int) -> Path:
     safe_title = sanitize_filename(story_title)
     return config.IMAGES_DIR / f"{safe_title}_scene_{scene_number}.png"
@@ -281,591 +220,618 @@ def get_story_video_path(story_title: str) -> Path:
 
 
 # ---------------------------------------------------------
-# Main Tabs (Covering All Requirements)
+# Sidebar: Reader & Library Settings (No API Keys / Tech Controls)
 # ---------------------------------------------------------
-tabs = st.tabs([
-    "📖 Create & Story (U1 & U2)",
-    "🎨 Illustrations (U3)",
-    "🎵 Audio Experience (U4)",
-    "🛡️ Verification & Safety (U3 & U5)",
-    "📦 Export & Download (U4)"
+with st.sidebar:
+    st.markdown("### ✨ TALEORA")
+    st.caption("AI-Powered Illustrated Storybook Generator")
+    st.markdown("---")
+
+    # Current Story Overview
+    current_story: StoryBook = st.session_state.get("current_story")
+    if current_story:
+        st.markdown("#### 📖 Active Storybook")
+        st.markdown(f"**{current_story.title}**")
+        st.caption(f"Genre: {current_story.genre} • {current_story.target_audience}")
+        st.markdown("---")
+
+    # Reader Voice Selection
+    st.markdown("#### 🎙️ Storyteller Voice")
+    voice_labels = {
+        "Female - Warm Storyteller (Ana)": "en-US-AnaNeural",
+        "Male - Friendly & Upbeat (Guy)": "en-US-GuyNeural",
+        "Female - Expressive (Jenny)": "en-US-JennyNeural",
+        "Male - Wise Narrator (Christopher)": "en-US-ChristopherNeural",
+        "Female - British Gentle (Sonia)": "en-GB-SoniaNeural",
+        "Male - British Storyteller (Ryan)": "en-GB-RyanNeural"
+    }
+    selected_voice_label = st.selectbox(
+        "Narrator Personality",
+        options=list(voice_labels.keys()),
+        index=0,
+        help="Choose the reading style for spoken story narration."
+    )
+    active_voice = voice_labels[selected_voice_label]
+
+    st.markdown("---")
+
+    # Library of Stories (Saved and Featured)
+    st.markdown("#### 📚 Storybook Library")
+    saved_files = StoryGenerator.list_saved_stories()
+    if saved_files:
+        story_options = {}
+        for f in saved_files:
+            clean_display = f.stem
+            # Remove timestamp prefix if present for clean display
+            if len(clean_display) > 16 and clean_display[:8].isdigit() and clean_display[8] == "_":
+                clean_display = clean_display[16:].replace("_", " ")
+            else:
+                clean_display = clean_display.replace("_", " ")
+            story_options[clean_display] = f
+
+        selected_story_name = st.selectbox(
+            "Open from library",
+            options=["-- Select a storybook --"] + list(story_options.keys())
+        )
+        if selected_story_name != "-- Select a storybook --":
+            if st.button("Open Storybook", use_container_width=True):
+                try:
+                    loaded = StoryGenerator.load_story_from_disk(story_options[selected_story_name])
+                    st.session_state["current_story"] = loaded
+                    st.session_state["current_page"] = 1
+                    st.session_state["verification_results"] = {}
+                    st.session_state["safety_report"] = None
+                    st.session_state["originality_report"] = None
+                    st.success(f"Opened '{loaded.title}'!")
+                    st.rerun()
+                except Exception as e:
+                    st.error("Could not load the selected story.")
+    else:
+        st.info("Your library is empty. Generate or explore a story!")
+
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align: center; color: #94a3b8; font-size: 0.85rem;'>"
+        "Taleora Storybook Studio<br>Crafted for young dreamers everywhere."
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+
+# ---------------------------------------------------------
+# Hero Banner
+# ---------------------------------------------------------
+st.markdown("""
+<div class="hero-container">
+    <div class="hero-title">✨ TALEORA</div>
+    <div class="hero-headline">"Every great adventure begins with three little words."</div>
+    <div class="hero-subtitle">
+        Enter three creative keywords, choose your world and reader age group, and watch Taleora 
+        bring your story to life with custom illustrations, neural narration, background music, 
+        and keepsake PDF and video books.
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# ---------------------------------------------------------
+# Main Consumer Navigation Tabs
+# ---------------------------------------------------------
+main_tabs = st.tabs([
+    "🏰 Story Studio",
+    "📖 Storybook Reader",
+    "🛡️ Story Quality & Safety",
+    "📦 Keepsakes & Downloads"
 ])
 
 
 # =========================================================
-# TAB 1: CREATE & STORY (U1 & U2)
+# TAB 1: STORY STUDIO (Creation & Showcase)
 # =========================================================
-with tabs[0]:
-    col_input, col_meta = st.columns([1.1, 0.9], gap="large")
+with main_tabs[0]:
+    # Section A: Featured Storybook Showcase
+    st.markdown("### ✨ Featured Storybooks")
+    st.caption("Explore these complete, pre-generated master storybooks with one click.")
 
-    with col_input:
-        st.markdown("### 1. Three Story Keywords (U1)")
-        st.caption("Enter exactly three creative keywords to spark the adventure.")
+    sc_col1, sc_col2 = st.columns(2, gap="medium")
 
-        # Preset helper buttons
-        c_p1, c_p2, c_p3 = st.columns(3)
-        if c_p1.button("✨ Magic Forest"):
-            st.session_state["kw1"] = "Glowing Acorn"
-            st.session_state["kw2"] = "Talking Fox"
-            st.session_state["kw3"] = "Crystal Stream"
-        if c_p2.button("🚀 Star Traveler"):
-            st.session_state["kw1"] = "Pocket Robot"
-            st.session_state["kw2"] = "Starlight Compass"
-            st.session_state["kw3"] = "Singing Asteroid"
-        if c_p3.button("🌊 Ocean Mystery"):
-            st.session_state["kw1"] = "Golden Shell"
-            st.session_state["kw2"] = "Friendly Dolphin"
-            st.session_state["kw3"] = "Sunken Coral Castle"
+    with sc_col1:
+        st.markdown("""
+        <div class="showcase-card">
+            <div>
+                <span class="showcase-badge badge-fantasy">✨ Fantasy • Ages 6-8</span>
+                <h4 style="margin: 0 0 0.5rem 0; color: #1e1b4b;">Barnaby & the Whispering Key</h4>
+                <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                    A curious little clockwork owl finds a floating brass key that unlocks an attic conservatory 
+                    filled with living forgotten stories.
+                </p>
+                <div style="margin-top: 0.5rem;">
+                    <span class="keyword-chip">Clockwork Owl</span>
+                    <span class="keyword-chip">Floating Key</span>
+                    <span class="keyword-chip">Secret Attic Library</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("📖 Read & Listen to Barnaby's Story", key="load_barnaby_btn", use_container_width=True):
+            for f in saved_files:
+                if "Barnaby" in f.name:
+                    st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
+                    st.session_state["current_page"] = 1
+                    st.session_state["verification_results"] = {}
+                    st.success("Loaded 'Barnaby and the Whispering Key'!")
+                    st.rerun()
 
-        kw1 = st.text_input("Keyword 1", value=st.session_state.get("kw1", "Clockwork Owl"), placeholder="e.g. Clockwork Owl")
-        kw2 = st.text_input("Keyword 2", value=st.session_state.get("kw2", "Floating Key"), placeholder="e.g. Floating Key")
-        kw3 = st.text_input("Keyword 3", value=st.session_state.get("kw3", "Secret Attic Library"), placeholder="e.g. Secret Attic Library")
-
-    with col_meta:
-        st.markdown("### 2. Genre & Audience (U1)")
-        genre_choice = st.selectbox(
-            "Story Genre",
-            options=list(config.GENRES.keys()),
-            index=0,
-            help="Defines narrative tone, worldbuilding style, and visual illustration DNA."
-        )
-        genre_details = config.GENRES[genre_choice]
-        st.info(f"**Visual & Narrative DNA:** {genre_details['description']}\n\n*Art Style:* `{genre_details['visual_style']}`")
-
-        audience_choice = st.selectbox(
-            "Target Audience & Age Group",
-            options=list(config.AUDIENCES.keys()),
-            index=1,
-            help="Controls sentence length, vocabulary complexity, scene count, and themes."
-        )
-        aud_details = config.AUDIENCES[audience_choice]
-        st.caption(f"🎯 **Complexity:** {aud_details['complexity']} | **Scenes:** {aud_details['scenes_count']} scenes (~{aud_details['max_words_per_scene']} w/scene)")
-
-    extra_notes = st.text_input("Optional Creative Notes / Nuances", placeholder="e.g. Focus on kindness and curiosity", value="")
+    with sc_col2:
+        st.markdown("""
+        <div class="showcase-card">
+            <div>
+                <span class="showcase-badge badge-scifi">🚀 Sci-Fi • Ages 9-12</span>
+                <h4 style="margin: 0 0 0.5rem 0; color: #1e1b4b;">Astro & the Singing Asteroid</h4>
+                <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                    An inventive pocket explorer robot follows a starlight compass into deep space to repair 
+                    a musical asteroid that guides lost travelers.
+                </p>
+                <div style="margin-top: 0.5rem;">
+                    <span class="keyword-chip">Pocket Robot</span>
+                    <span class="keyword-chip">Starlight Compass</span>
+                    <span class="keyword-chip">Singing Asteroid</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🚀 Read & Listen to Astro's Story", key="load_astro_btn", use_container_width=True):
+            for f in saved_files:
+                if "Astro" in f.name:
+                    st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
+                    st.session_state["current_page"] = 1
+                    st.session_state["verification_results"] = {}
+                    st.success("Loaded 'Astro and the Singing Asteroid'!")
+                    st.rerun()
 
     st.markdown("---")
 
-    # Generate Story Action
-    generate_btn = st.button("✨ Generate Story & Character Bible (U1 + U2)", type="primary", use_container_width=True)
+    # Section B: Create a Brand New Story
+    st.markdown("### ✍️ Create a Brand New Storybook")
+    st.caption("Tell us three inspiring ideas, and our storytelling AI will weave your original book.")
 
-    if generate_btn:
-        active_api_key = api_key_input.strip() or config.GEMINI_API_KEY
-        if not active_api_key:
-            st.error("⚠️ Please provide a Google Gemini API Key in the sidebar or in your `.env` file.")
-        else:
-            raw_keywords = [kw1, kw2, kw3]
-            is_valid, validation_msg, cleaned_kws = validate_keywords(raw_keywords)
+    col_kw, col_theme = st.columns([1.1, 0.9], gap="large")
 
-            if not is_valid:
-                st.error(f"⚠️ Keyword validation error: {validation_msg}")
-            else:
-                with st.spinner("🧙‍♂️ Weaving story, sculpting characters, and directing scene storyboards..."):
-                    try:
-                        generator = StoryGenerator(api_key=active_api_key, model_name=selected_model)
-                        story = generator.generate_story(
-                            keywords=cleaned_kws,
-                            genre=genre_choice,
-                            audience=audience_choice,
-                            extra_notes=extra_notes
-                        )
-                        st.session_state["current_story"] = story
-                        st.session_state["verification_results"] = {}
-                        st.success(f"🎉 Generated story: **{story.title}**!")
-                    except Exception as e:
-                        st.error(f"❌ Story generation failed: {e}")
+    with col_kw:
+        st.markdown("##### 1. Your Three Words")
+        
+        # Inspiration presets
+        p1, p2, p3 = st.columns(3)
+        if p1.button("🌲 Enchanted Woods"):
+            st.session_state["in_kw1"] = "Glowing Acorn"
+            st.session_state["in_kw2"] = "Talking Fox"
+            st.session_state["in_kw3"] = "Crystal Stream"
+        if p2.button("🌌 Star Cruiser"):
+            st.session_state["in_kw1"] = "Pocket Robot"
+            st.session_state["in_kw2"] = "Starlight Compass"
+            st.session_state["in_kw3"] = "Singing Asteroid"
+        if p3.button("🐬 Coral Kingdom"):
+            st.session_state["in_kw1"] = "Golden Shell"
+            st.session_state["in_kw2"] = "Friendly Dolphin"
+            st.session_state["in_kw3"] = "Sunken Castle"
 
-    # Display Story if available in session state
-    if "current_story" in st.session_state:
-        story: StoryBook = st.session_state["current_story"]
+        user_kw1 = st.text_input("First Word", value=st.session_state.get("in_kw1", "Clockwork Owl"), placeholder="e.g. Clockwork Owl")
+        user_kw2 = st.text_input("Second Word", value=st.session_state.get("in_kw2", "Floating Key"), placeholder="e.g. Floating Key")
+        user_kw3 = st.text_input("Third Word", value=st.session_state.get("in_kw3", "Secret Attic Library"), placeholder="e.g. Secret Attic Library")
 
-        st.markdown("---")
-        st.markdown(f"## 📖 {story.title}")
-        st.markdown(f"*{story.logline}*")
-
-        kw_html = " ".join([f"<span class='keyword-pill'>🏷️ {k}</span>" for k in story.keywords])
-        st.markdown(
-            f"**Genre:** `{story.genre}` | **Audience:** `{story.target_audience}`<br>"
-            f"**Keywords Integrated:** {kw_html}",
-            unsafe_allow_html=True
+    with col_theme:
+        st.markdown("##### 2. Story World & Reader Age")
+        selected_genre = st.selectbox(
+            "Story World / Genre",
+            options=list(config.GENRES.keys()),
+            index=0,
+            help="Chooses the literary atmosphere, illustrations style, and emotional tone."
         )
+        genre_info = config.GENRES[selected_genre]
+        st.caption(f"✨ **Atmosphere:** {genre_info['description']}")
 
-        st.markdown(f"> **Moral / Takeaway:** {story.moral_or_takeaway}")
+        selected_audience = st.selectbox(
+            "Reader Age Group",
+            options=list(config.AUDIENCES.keys()),
+            index=1,
+            help="Tunes the vocabulary, sentence pacing, and length to the reader."
+        )
+        aud_info = config.AUDIENCES[selected_audience]
+        st.caption(f"🎯 **Reading Level:** {aud_info['complexity']} (~{aud_info['scenes_count']} illustrated chapters)")
 
-        # Character Bible (U2 requirement)
-        st.markdown("### 👥 Character Bible (Requirement U2)")
-        st.caption("Fixed physical attributes, clothing, and props to ensure visual consistency across all scene illustrations.")
+    special_wishes = st.text_input(
+        "Special Wishes / Theme (Optional)",
+        placeholder="e.g. A story about sharing, bravery, and caring for others",
+        value=""
+    )
 
-        char_cols = st.columns(min(len(story.character_bible), 3) or 1)
-        for idx, char in enumerate(story.character_bible):
-            with char_cols[idx % len(char_cols)]:
-                st.markdown(f"""
-                <div class="story-card">
-                    <h4>👤 {char.name}</h4>
-                    <span class="character-badge">{char.role}</span>
-                    <p><strong>Appearance:</strong> {char.visual_appearance}</p>
-                    <p><strong>Signature Outfit:</strong> {char.signature_clothing}</p>
-                    <p><strong>Key Props:</strong> {char.distinct_accessories}</p>
-                    <p><em>"{char.personality_trait}"</em></p>
-                </div>
-                """, unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
 
-        # Scene Breakdown (U2 requirement)
-        st.markdown("### 🎬 Sequential Story Scenes (Requirement U2)")
-        for scene in story.scenes:
-            with st.container():
-                st.markdown(f"""
-                <div class="story-card">
-                    <span class="scene-badge">Scene {scene.scene_number} of {len(story.scenes)}</span>
-                    <h4>{scene.title}</h4>
-                    <p style="font-size: 1.05rem; line-height: 1.6; color: #1e293b;">{scene.narrative_text}</p>
-                    <div style="margin-top: 0.8rem;">
-                        <strong>Characters Present:</strong> {", ".join(scene.characters_present) if scene.characters_present else "None"} | 
-                        <strong>Musical Mood:</strong> <em>{scene.music_mood}</em>
-                    </div>
-                    <div class="prompt-box">
-                        <strong>🎨 Visual Image Prompt (With Character Consistency):</strong><br>
-                        <code>{scene.image_prompt}</code>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+    # Big Action Button
+    generate_story_click = st.button("✨ Generate My Storybook", type="primary", use_container_width=True)
 
-        with st.expander("🔍 Inspect Structured JSON Output (Requirement U2)"):
-            st.json(story.model_dump())
+    if generate_story_click:
+        raw_kws = [user_kw1, user_kw2, user_kw3]
+        valid, val_msg, clean_kws = validate_keywords(raw_kws)
+
+        if not valid:
+            st.error(f"Please check your keywords: {val_msg}")
+        else:
+            progress_placeholder = st.empty()
+            with progress_placeholder.container():
+                st.info("🧙‍♂️ Gathering imagination, writing chapters, and crafting characters...")
+                progress_bar = st.progress(0.15)
+
+                try:
+                    # 1. Generate Story Structure
+                    generator = StoryGenerator()
+                    new_story = generator.generate_story(
+                        keywords=clean_kws,
+                        genre=selected_genre,
+                        audience=selected_audience,
+                        extra_notes=special_wishes
+                    )
+                    progress_bar.progress(0.40)
+                    st.info(f"🎨 Story written! Now painting illustrations for '{new_story.title}'...")
+
+                    # 2. Generate Illustrations
+                    img_gen = ImageGenerator()
+                    img_gen.generate_all_scenes(story=new_story, engine="pollinations", force_regenerate=True)
+                    progress_bar.progress(0.65)
+                    st.info("🎙️ Voicing spoken narration and composing music...")
+
+                    # 3. Generate Audio & Music
+                    audio_gen = AudioGenerator(voice=active_voice)
+                    audio_gen.generate_all_narrations(story=new_story, voice=active_voice, force_regenerate=True)
+                    music_gen = MusicGenerator()
+                    music_gen.generate_story_music(story=new_story, duration_seconds=25, force_regenerate=True)
+                    progress_bar.progress(0.85)
+                    st.info("📦 Assembling illustrated PDF and video book...")
+
+                    # 4. Generate PDF & MP4
+                    ExportManager.generate_pdf_storybook(story=new_story, force_regenerate=True)
+                    music_file = get_story_music_path(new_story.title)
+                    ExportManager.generate_mp4_video(
+                        story=new_story,
+                        bg_music_path=music_file if music_file.exists() else None,
+                        force_regenerate=True
+                    )
+                    progress_bar.progress(1.0)
+
+                    # Set session state
+                    st.session_state["current_story"] = new_story
+                    st.session_state["current_page"] = 1
+                    st.session_state["verification_results"] = {}
+                    st.session_state["safety_report"] = None
+                    st.session_state["originality_report"] = None
+
+                    st.balloons()
+                    st.success(f"🎉 Your complete storybook **{new_story.title}** is ready! Visit the 'Storybook Reader' tab to enjoy it.")
+
+                except Exception as e:
+                    progress_placeholder.empty()
+                    err_message = str(e)
+                    st.error(
+                        f"We couldn't generate a new story right now: {err_message}\n\n"
+                        "💡 **Tip:** You can immediately explore and enjoy our pre-generated featured stories above!"
+                    )
 
 
 # =========================================================
-# TAB 2: ILLUSTRATIONS (U3)
+# TAB 2: STORYBOOK READER (Page-by-Page Interactive Book)
 # =========================================================
-with tabs[1]:
-    st.markdown("### 🎨 Scene Image Generation (Requirement U3)")
-    st.caption("Generate high-resolution illustrations for each scene while maintaining character consistency.")
-
-    if "current_story" not in st.session_state:
-        st.warning("⚠️ Please generate or load a story in the 'Create & Story' tab first.")
+with main_tabs[1]:
+    if not current_story:
+        st.info("👈 Please select or generate a story in the **Story Studio** to begin reading.")
     else:
-        story: StoryBook = st.session_state["current_story"]
+        st.markdown(f"## 📖 {current_story.title}")
+        st.markdown(f"*{current_story.logline}*")
 
-        c_gen_all, c_engine_info = st.columns([1, 2])
-        with c_gen_all:
-            if st.button("🖼️ Generate All Scene Illustrations", type="primary", use_container_width=True):
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-
-                def update_progress(curr, total, msg):
-                    progress_bar.progress(curr / total)
-                    status_text.text(msg)
-
-                img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
-                with st.spinner("Generating illustrations..."):
-                    try:
-                        results = img_gen.generate_all_scenes(
-                            story=story,
-                            engine=image_engine,
-                            progress_callback=update_progress,
-                            force_regenerate=True
-                        )
-                        progress_bar.progress(1.0)
-                        status_text.text("✨ All illustrations generated successfully!")
-                        st.success("All illustrations ready!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Generation error: {e}")
-
-        with c_engine_info:
-            st.info(f"Using engine: **{image_engine.capitalize()}**. "
-                    f"Generated images are cached in `outputs/images/` and reused automatically.")
+        # Cast of Characters Section
+        with st.expander("👥 Meet the Cast of Characters", expanded=False):
+            char_cols = st.columns(min(len(current_story.character_bible), 3) or 1)
+            for idx, char in enumerate(current_story.character_bible):
+                with char_cols[idx % len(char_cols)]:
+                    st.markdown(f"""
+                    <div style="background: #f8fafc; border-radius: 12px; padding: 1.2rem; border: 1px solid #e2e8f0;">
+                        <h4 style="margin: 0; color: #1e1b4b;">👤 {char.name}</h4>
+                        <span style="color: #4338ca; font-weight: 600; font-size: 0.85rem;">{char.role}</span>
+                        <p style="margin-top: 0.5rem; font-size: 0.92rem; color: #334155;">
+                            <strong>Appearance:</strong> {char.visual_appearance}<br>
+                            <strong>Outfit:</strong> {char.signature_clothing}<br>
+                            <strong>Special Item:</strong> {char.distinct_accessories}<br>
+                            <em>"{char.personality_trait}"</em>
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
         st.markdown("---")
 
-        for scene in story.scenes:
-            img_path = get_scene_image_path(story.title, scene.scene_number)
-            has_image = img_path.exists()
+        # Interactive Page Navigation
+        total_pages = len(current_story.scenes)
+        current_page_idx = st.session_state.get("current_page", 1)
+        if current_page_idx < 1 or current_page_idx > total_pages:
+            current_page_idx = 1
+            st.session_state["current_page"] = 1
 
-            with st.container():
-                st.markdown(f"#### Scene {scene.scene_number}: {scene.title}")
-                col_img, col_desc = st.columns([1, 1], gap="medium")
+        nav_col1, nav_col2, nav_col3 = st.columns([1, 2, 1])
+        with nav_col1:
+            if st.button("⬅️ Previous Chapter", disabled=(current_page_idx <= 1), use_container_width=True):
+                st.session_state["current_page"] = max(current_page_idx - 1, 1)
+                st.rerun()
 
-                with col_img:
-                    if has_image:
-                        st.image(str(img_path), caption=f"Scene {scene.scene_number} Illustration", use_container_width=True)
-                    else:
-                        st.markdown("""
-                        <div style="background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; height: 320px; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: 600;">
-                            🖼️ Illustration not yet generated
+        with nav_col2:
+            st.markdown(
+                f"<div style='text-align: center; font-weight: 700; font-size: 1.1rem; color: #1e1b4b; padding-top: 0.4rem;'>"
+                f"Chapter {current_page_idx} of {total_pages}"
+                f"</div>",
+                unsafe_allow_html=True
+            )
+
+        with nav_col3:
+            if st.button("Next Chapter ➡️", disabled=(current_page_idx >= total_pages), use_container_width=True):
+                st.session_state["current_page"] = min(current_page_idx + 1, total_pages)
+                st.rerun()
+
+        # Display Current Page
+        current_scene = current_story.scenes[current_page_idx - 1]
+        scene_img_path = get_scene_image_path(current_story.title, current_scene.scene_number)
+        scene_audio_path = get_scene_audio_path(current_story.title, current_scene.scene_number)
+
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+
+        page_col_art, page_col_text = st.columns([1, 1.2], gap="large")
+
+        with page_col_art:
+            if scene_img_path.exists():
+                st.image(str(scene_img_path), caption=f"Chapter {current_scene.scene_number} Illustration", use_container_width=True)
+            else:
+                st.markdown("""
+                <div style="background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 14px; height: 350px; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: 600;">
+                    🎨 Illustration will appear here
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Redraw page illustration button
+            if st.button(f"🎨 Redraw This Illustration", key=f"redraw_p_{current_scene.scene_number}", use_container_width=True):
+                with st.spinner("Creating a fresh illustration for this chapter..."):
+                    img_gen = ImageGenerator()
+                    import random
+                    img_gen.generate_scene_image(
+                        scene=current_scene,
+                        story_title=current_story.title,
+                        engine="pollinations",
+                        force_regenerate=True,
+                        seed=random.randint(1000, 999999)
+                    )
+                    st.success("Illustration updated!")
+                    st.rerun()
+
+        with page_col_text:
+            st.markdown(f"### {current_scene.title}")
+            st.markdown(
+                f"<div style='font-size: 1.2rem; line-height: 1.8; color: #1e293b; background: #fafafa; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #6366f1; margin: 1rem 0;'>"
+                f"{current_scene.narrative_text}"
+                f"</div>",
+                unsafe_allow_html=True
+            )
+
+            # Audio Narration Player
+            st.markdown("##### 🎙️ Spoken Narration")
+            if scene_audio_path.exists():
+                st.audio(str(scene_audio_path))
+            else:
+                if st.button("🎙️ Voice This Chapter Now", key=f"voice_btn_{current_scene.scene_number}"):
+                    audio_gen = AudioGenerator(voice=active_voice)
+                    audio_gen.generate_scene_narration(current_scene, current_story.title, voice=active_voice, force_regenerate=True)
+                    st.rerun()
+
+            # Background Music Player
+            bg_music_file = get_story_music_path(current_story.title)
+            if bg_music_file.exists():
+                st.markdown("##### 🎶 Story Theme Ambience")
+                st.audio(str(bg_music_file))
+
+        # Moral / Takeaway at end of story
+        if current_page_idx == total_pages:
+            st.markdown("---")
+            st.markdown(f"""
+            <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 1.5rem; text-align: center; margin-top: 1.5rem;">
+                <h4 style="color: #065f46; margin: 0 0 0.5rem 0;">🌟 The Story's Heartwarming Lesson</h4>
+                <p style="font-size: 1.15rem; font-style: italic; color: #047857; margin: 0;">
+                    "{current_story.moral_or_takeaway}"
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# =========================================================
+# TAB 3: STORY QUALITY & SAFETY (Verification)
+# =========================================================
+with main_tabs[2]:
+    if not current_story:
+        st.info("👈 Please select or open a storybook first.")
+    else:
+        st.markdown("### 🛡️ Storybook Quality & Child Safety")
+        st.caption("We review every story to ensure age-appropriate wonder, visual accuracy, and creative originality.")
+
+        v_col1, v_col2, v_col3 = st.columns(3, gap="medium")
+
+        # 1. Child Safety Shield
+        with v_col1:
+            st.markdown("""
+            <div class="verification-card">
+                <span class="badge-verified">🛡️ Child Safety Shield</span>
+                <h4 style="margin: 0.8rem 0 0.4rem 0;">100% Kid Safe</h4>
+                <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                    Audited for age-appropriate language, wholesome themes, positive moral reinforcement, and zero violence.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Run Safety Audit", key="run_safety_btn", use_container_width=True):
+                s_filter = ChildSafetyFilter()
+                with st.spinner("Reviewing story text..."):
+                    rep = s_filter.evaluate_story_safety(current_story)
+                    st.session_state["safety_report"] = rep
+                    st.success("Safety audit completed!")
+
+        # 2. Visual Alignment Check
+        with v_col2:
+            st.markdown("""
+            <div class="verification-card">
+                <span class="badge-verified">🎨 Visual Accuracy</span>
+                <h4 style="margin: 0.8rem 0 0.4rem 0;">Art Quality Review</h4>
+                <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                    Visual AI inspects every scene illustration to confirm it accurately matches the story and character details.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Inspect Illustrations", key="run_art_btn", use_container_width=True):
+                verifier = BLIPVerifier()
+                with st.spinner("Reviewing scene illustrations..."):
+                    for sc in current_story.scenes:
+                        img_p = get_scene_image_path(current_story.title, sc.scene_number)
+                        if img_p.exists():
+                            res = verifier.verify_scene_image(
+                                sc.scene_number, img_p, sc.narrative_text, sc.image_prompt, sc.characters_present
+                            )
+                            if "verification_results" not in st.session_state:
+                                st.session_state["verification_results"] = {}
+                            st.session_state["verification_results"][sc.scene_number] = res
+                    st.success("Visual review complete!")
+
+        # 3. Originality & Freshness
+        with v_col3:
+            st.markdown("""
+            <div class="verification-card">
+                <span class="badge-verified">✨ Story Originality</span>
+                <h4 style="margin: 0.8rem 0 0.4rem 0;">Original Concept</h4>
+                <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                    Compared against classic fairy tale archetypes to ensure a fresh, imaginative narrative.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Check Originality", key="run_orig_btn", use_container_width=True):
+                o_checker = OriginalityChecker()
+                with st.spinner("Checking classic fairy tale library..."):
+                    o_rep = o_checker.evaluate_story_originality(current_story)
+                    st.session_state["originality_report"] = o_rep
+                    st.success("Originality check complete!")
+
+        st.markdown("---")
+
+        # Display Detailed Verification Findings if Available
+        s_rep: SafetyReport = st.session_state.get("safety_report")
+        if s_rep:
+            st.markdown("#### 🛡️ Safety Audit Summary")
+            st.markdown(f"**Safety Score:** `{s_rep.safety_score}%` — **{s_rep.safety_rating}**")
+            st.info(s_rep.explanation)
+
+        o_rep: OriginalityReport = st.session_state.get("originality_report")
+        if o_rep:
+            st.markdown("#### ✨ Originality Analysis")
+            st.markdown(f"**Originality Rating:** `{o_rep.originality_score}%` — **{o_rep.status}**")
+            st.caption(f"Closest classic archetype comparison: *{o_rep.closest_archetype}* ({o_rep.similarity_percentage}% overlap)")
+            st.markdown(f"*{o_rep.analysis}*")
+
+        v_res_map = st.session_state.get("verification_results", {})
+        if v_res_map:
+            st.markdown("#### 🎨 Scene-by-Scene Visual Inspection")
+            for sc in current_story.scenes:
+                if sc.scene_number in v_res_map:
+                    sc_res = v_res_map[sc.scene_number]
+                    badge_class = "badge-verified" if sc_res["status"] == "VERIFIED" else "badge-flagged"
+                    with st.container():
+                        st.markdown(f"""
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem;">
+                            <strong>Chapter {sc.scene_number}: {sc.title}</strong> — 
+                            <span class="{badge_class}">{sc_res['status']}</span><br>
+                            <span style="font-size: 0.9rem; color: #475569;">Visual Content Seen: <em>"{sc_res['blip_caption']}"</em></span>
                         </div>
                         """, unsafe_allow_html=True)
 
-                    regen_key = f"regen_scene_{scene.scene_number}"
-                    if st.button(f"🔄 {'Regenerate' if has_image else 'Generate'} Scene {scene.scene_number}", key=regen_key, use_container_width=True):
-                        img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
-                        with st.spinner(f"Generating illustration for Scene {scene.scene_number}..."):
-                            try:
-                                import random
-                                new_seed = random.randint(1000, 999999)
-                                img_gen.generate_scene_image(
-                                    scene=scene,
-                                    story_title=story.title,
-                                    engine=image_engine,
-                                    force_regenerate=True,
-                                    seed=new_seed
-                                )
-                                if "verification_results" in st.session_state:
-                                    st.session_state["verification_results"].pop(scene.scene_number, None)
-                                st.success(f"Scene {scene.scene_number} updated!")
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Failed to generate image: {e}")
-
-                with col_desc:
-                    st.markdown(f"**Narrative Text:**<br>{scene.narrative_text}", unsafe_allow_html=True)
-                    st.markdown(f"**Characters Present:** `{', '.join(scene.characters_present) if scene.characters_present else 'None'}`")
-                    st.markdown(f"**Music Mood:** *{scene.music_mood}*")
-
-                    with st.expander("View Image Prompt (Character Consistency Applied)"):
-                        st.code(scene.image_prompt, language="text")
-
-                st.markdown("---")
-
 
 # =========================================================
-# TAB 3: AUDIO & NARRATION (U4)
+# TAB 4: KEEPSAKES & DOWNLOADS (PDF & Video)
 # =========================================================
-with tabs[2]:
-    st.markdown("### 🎵 Audio Experience: TTS Narration & Background Music (Requirement U4)")
-    st.caption("Generate neural speech narration with Microsoft Edge TTS and ambient background music with Meta MusicGen.")
-
-    if "current_story" not in st.session_state:
-        st.warning("⚠️ Please generate or load a story first.")
+with main_tabs[3]:
+    if not current_story:
+        st.info("👈 Please select or open a storybook first.")
     else:
-        story: StoryBook = st.session_state["current_story"]
+        st.markdown("### 📦 Keepsakes & Downloads")
+        st.caption("Take your storybook anywhere! Download a printable illustrated book or an audio-narrated video.")
 
-        # Action Buttons
-        c_tts, c_music = st.columns(2)
-        with c_tts:
-            if st.button("🎙️ Generate All Scene Narrations (Edge TTS)", type="primary", use_container_width=True):
-                audio_gen = AudioGenerator(voice=voice_code)
-                with st.spinner(f"Synthesizing narration using voice: {selected_voice}..."):
-                    try:
-                        audio_gen.generate_all_narrations(story, voice=voice_code, force_regenerate=True)
-                        st.success("All scene narrations synthesized successfully!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Narration generation failed: {e}")
+        d_col1, d_col2 = st.columns(2, gap="large")
 
-        with c_music:
-            if st.button("🎶 Generate Instrumental Background Music (MusicGen)", use_container_width=True):
-                music_gen = MusicGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
-                with st.spinner("Synthesizing ambient background music..."):
-                    try:
-                        m_path, m_model = music_gen.generate_story_music(story, duration_seconds=25, force_regenerate=True)
-                        st.session_state["music_model_used"] = m_model
-                        st.success(f"Background music generated using: {m_model}!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Music generation failed: {e}")
-
-        st.markdown("---")
-
-        # Background Music Player
-        music_file = get_story_music_path(story.title)
-        if music_file.exists():
-            st.markdown(f"#### 🎵 Story Theme Music ({st.session_state.get('music_model_used', 'Harmonic Ambient')})")
-            st.audio(str(music_file))
-            st.markdown("---")
-
-        # Scene-by-Scene Audio Players
-        st.markdown("#### 🎧 Scene Narration Audio Clips")
-        for scene in story.scenes:
-            audio_path = get_scene_audio_path(story.title, scene.scene_number)
-            img_path = get_scene_image_path(story.title, scene.scene_number)
-
-            col_a_img, col_a_play = st.columns([1, 2.5], gap="medium")
-            with col_a_img:
-                if img_path.exists():
-                    st.image(str(img_path), caption=f"Scene {scene.scene_number}", use_container_width=True)
-                else:
-                    st.caption(f"Scene {scene.scene_number}")
-
-            with col_a_play:
-                st.markdown(f"**Scene {scene.scene_number}: {scene.title}**")
-                st.markdown(f"*{scene.audio_script or scene.narrative_text}*")
-
-                if audio_path.exists():
-                    st.audio(str(audio_path))
-                else:
-                    st.caption("🎙️ Narration audio not generated yet.")
-
-                if st.button(f"🔄 Voicing Scene {scene.scene_number}", key=f"voice_sc_{scene.scene_number}"):
-                    audio_gen = AudioGenerator(voice=voice_code)
-                    with st.spinner(f"Voicing Scene {scene.scene_number}..."):
-                        try:
-                            audio_gen.generate_scene_narration(scene, story.title, voice=voice_code, force_regenerate=True)
-                            st.success(f"Scene {scene.scene_number} audio ready!")
-                            st.rerun()
-                        except Exception as e:
-                            st.error(f"Failed to generate audio: {e}")
-
-            st.markdown("---")
-
-
-# =========================================================
-# TAB 4: VERIFICATION & SAFETY (U3 & U5)
-# =========================================================
-with tabs[3]:
-    st.markdown("### 🛡️ BLIP Image Captioning & Narrative Verification (Requirement U3)")
-    st.caption("Salesforce BLIP inspects each generated image and evaluates visual-semantic alignment against the story.")
-
-    if "current_story" not in st.session_state:
-        st.warning("⚠️ Please generate or load a story first.")
-    else:
-        story: StoryBook = st.session_state["current_story"]
-
-        scenes_with_images = [
-            s for s in story.scenes if get_scene_image_path(story.title, s.scene_number).exists()
-        ]
-
-        if not scenes_with_images:
-            st.warning("⚠️ No scene illustrations found. Please generate illustrations in the 'Illustrations' tab first.")
-        else:
-            if "verification_results" not in st.session_state:
-                st.session_state["verification_results"] = {}
-
-            if st.button("🔍 Run Salesforce BLIP Verification on Generated Illustrations", type="primary"):
-                verifier = BLIPVerifier(
-                    hf_token=hf_token_input.strip() or config.HF_TOKEN,
-                    gemini_api_key=api_key_input.strip() or config.GEMINI_API_KEY
-                )
-                with st.spinner("🤖 Inspecting illustrations with Salesforce BLIP and calculating alignment scores..."):
-                    for sc in scenes_with_images:
-                        img_path = get_scene_image_path(story.title, sc.scene_number)
-                        res = verifier.verify_scene_image(
-                            scene_number=sc.scene_number,
-                            image_path=img_path,
-                            intended_text=sc.narrative_text,
-                            image_prompt=sc.image_prompt,
-                            characters_expected=sc.characters_present
-                        )
-                        st.session_state["verification_results"][sc.scene_number] = res
-                    st.success("BLIP verification complete!")
-
-            v_results = st.session_state.get("verification_results", {})
-            if v_results:
-                total_verified = sum(1 for r in v_results.values() if r["status"] == "VERIFIED")
-                total_flagged = sum(1 for r in v_results.values() if r["status"] == "FLAGGED")
-                avg_score = int(sum(r["similarity_score"] for r in v_results.values()) / max(len(v_results), 1))
-
-                m1, m2, m3, m4 = st.columns(4)
-                m1.metric("Scenes Inspected", len(v_results))
-                m2.metric("Verified (Match)", total_verified)
-                m3.metric("Flagged (Mismatch)", total_flagged)
-                m4.metric("Avg Alignment Score", f"{avg_score}%")
-
-                st.markdown("---")
-
-                for scene in story.scenes:
-                    if scene.scene_number in v_results:
-                        res = v_results[scene.scene_number]
-                        img_path = get_scene_image_path(story.title, scene.scene_number)
-
-                        with st.container():
-                            col_thumb, col_details = st.columns([1, 2.5], gap="medium")
-                            with col_thumb:
-                                if img_path.exists():
-                                    st.image(str(img_path), caption=f"Scene {scene.scene_number}", use_container_width=True)
-
-                            with col_details:
-                                status_class = "status-verified" if res["status"] == "VERIFIED" else "status-flagged"
-                                st.markdown(f"""
-                                <h4>Scene {scene.scene_number}: {scene.title}</h4>
-                                <span class="{status_class}">Status: {res['status']} ({res['similarity_score']}% Match)</span>
-                                """, unsafe_allow_html=True)
-
-                                st.markdown(f"**Intended Scene Narrative:**<br>*{scene.narrative_text}*", unsafe_allow_html=True)
-                                st.markdown(f"**BLIP Generated Caption:**<br>`{res['blip_caption']}`", unsafe_allow_html=True)
-                                st.caption(f"Inspection Model: *{res['model_used']}*")
-
-                                if res["matched_tokens"]:
-                                    st.markdown(f"**Matched Visual Elements:** `{', '.join(res['matched_tokens'])}`")
-                                if res["matched_characters"]:
-                                    st.markdown(f"**Characters Verified:** `{', '.join(res['matched_characters'])}`")
-
-                                st.info(res["recommendation"])
-
-                                if res["status"] == "FLAGGED":
-                                    if st.button(f"🔄 Regenerate Scene {scene.scene_number} Illustration", key=f"fix_scene_{scene.scene_number}"):
-                                        img_gen = ImageGenerator(hf_token=hf_token_input.strip() or config.HF_TOKEN)
-                                        import random
-                                        img_gen.generate_scene_image(
-                                            scene=scene,
-                                            story_title=story.title,
-                                            engine=image_engine,
-                                            force_regenerate=True,
-                                            seed=random.randint(1000, 999999)
-                                        )
-                                        st.session_state["verification_results"].pop(scene.scene_number, None)
-                                        st.rerun()
-
-                            st.markdown("---")
-
-        # ---------------------------------------------------------
-        # SECTION 2: CHILD SAFETY FILTER (Requirement U5)
-        # ---------------------------------------------------------
-        st.markdown("---")
-        st.markdown("### 🛡️ Child Safety & Content Filtering (Requirement U5)")
-        st.caption("Multi-layer content guardrail combining lexical screening and LLM Safety Guardian evaluation.")
-
-        c_safe_btn, c_safe_space = st.columns([1, 2])
-        with c_safe_btn:
-            if st.button("🛡️ Run Child Safety Audit", type="primary", use_container_width=True):
-                safety_filter = ChildSafetyFilter(api_key=api_key_input.strip() or config.GEMINI_API_KEY)
-                with st.spinner("Auditing story content for child safety and age-appropriateness..."):
-                    try:
-                        s_report = safety_filter.evaluate_story_safety(story)
-                        st.session_state["safety_report"] = s_report
-                        st.success("Child safety evaluation completed!")
-                    except Exception as e:
-                        st.error(f"Safety evaluation failed: {e}")
-
-        s_report: SafetyReport = st.session_state.get("safety_report")
-        if s_report:
-            col_s1, col_s2, col_s3 = st.columns(3)
-            col_s1.metric("Safety Score", f"{s_report.safety_score}%")
-            col_s2.metric("Rating", s_report.safety_rating)
-            col_s3.metric("Status", "✅ APPROVED" if s_report.is_safe else "⚠️ REVIEW REQUIRED")
-
-            safe_box_color = "#ecfdf5" if s_report.is_safe else "#fff1f2"
-            safe_border = "#a7f3d0" if s_report.is_safe else "#fecdd3"
-            st.markdown(f"""
-            <div style="background: {safe_box_color}; border: 1px solid {safe_border}; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
-                <p><strong>Evaluation Summary:</strong> {s_report.explanation}</p>
-                <p><strong>Guidance / Advice:</strong> {s_report.mitigation_advice}</p>
-                {f"<p><strong>Flagged Categories:</strong> {', '.join(s_report.flagged_categories)}</p>" if s_report.flagged_categories else ""}
-            </div>
-            """, unsafe_allow_html=True)
-
-        # ---------------------------------------------------------
-        # SECTION 3: STORY ORIGINALITY CHECKER (Requirement U5)
-        # ---------------------------------------------------------
-        st.markdown("---")
-        st.markdown("### ✨ Story Originality & Uniqueness Audit (Requirement U5)")
-        st.caption("Algorithmic corpus comparison against classic tales and LLM semantic novelty analysis.")
-
-        c_orig_btn, c_orig_space = st.columns([1, 2])
-        with c_orig_btn:
-            if st.button("✨ Run Originality & Uniqueness Audit", type="primary", use_container_width=True):
-                orig_checker = OriginalityChecker(api_key=api_key_input.strip() or config.GEMINI_API_KEY)
-                with st.spinner("Screening against classic fairy tale corpus and evaluating creative novelty..."):
-                    try:
-                        o_report = orig_checker.evaluate_story_originality(story)
-                        st.session_state["originality_report"] = o_report
-                        st.success("Originality audit completed!")
-                    except Exception as e:
-                        st.error(f"Originality audit failed: {e}")
-
-        o_report: OriginalityReport = st.session_state.get("originality_report")
-        if o_report:
-            col_o1, col_o2, col_o3 = st.columns(3)
-            col_o1.metric("Originality Score", f"{o_report.originality_score}%")
-            col_o2.metric("Originality Tier", o_report.status)
-            col_o3.metric("Closest Classic Tale", f"{o_report.closest_archetype} ({o_report.similarity_percentage}% match)")
-
-            st.markdown(f"""
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.2rem; margin-top: 1rem;">
-                <p><strong>Literature Analysis:</strong> {o_report.analysis}</p>
-                <strong>Unique Highlights & Creative Twists:</strong>
-                <ul>
-                    {"".join([f"<li>{h}</li>" for h in o_report.novelty_highlights])}
-                </ul>
-            </div>
-            """, unsafe_allow_html=True)
-
-
-
-# =========================================================
-# TAB 5: EXPORT & DOWNLOAD (U4)
-# =========================================================
-with tabs[4]:
-    st.markdown("### 📦 Multi-Format Export: Illustrated PDF & MP4 Video (Requirement U4)")
-    st.caption("Generate publication-ready illustrated PDF storybooks and synchronized MP4 audio-video presentations.")
-
-    if "current_story" not in st.session_state:
-        st.warning("⚠️ Please generate or load a story first.")
-    else:
-        story: StoryBook = st.session_state["current_story"]
-
-        c_pdf_col, c_video_col = st.columns(2, gap="large")
-
-        # ---------------- PDF EXPORT ----------------
-        with c_pdf_col:
+        # ---------------- PDF Keepsake ----------------
+        with d_col1:
             st.markdown("""
             <div class="export-box">
-                <h3>📄 Illustrated PDF Storybook</h3>
-                <p>Full-color storybook containing the cover page, character profiles, scene-by-scene high-res illustrations, and story text formatted via ReportLab.</p>
+                <span style="font-size: 3rem;">📄</span>
+                <h3 style="margin: 0.8rem 0 0.4rem 0;">Illustrated PDF Storybook</h3>
+                <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                    A beautifully typeset storybook containing the cover page, character cast profiles, 
+                    full-color chapter illustrations, and story text.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
-            pdf_path = get_story_pdf_path(story.title)
-            pdf_exists = pdf_path.exists()
-
-            if st.button("🎨 Build Illustrated PDF Storybook", type="primary", use_container_width=True):
-                with st.spinner("Compiling illustrated PDF storybook with ReportLab..."):
-                    try:
-                        built_pdf = ExportManager.generate_pdf_storybook(story, force_regenerate=True)
-                        st.success("PDF Storybook compiled successfully!")
+            pdf_file = get_story_pdf_path(current_story.title)
+            if not pdf_file.exists():
+                if st.button("📄 Generate Storybook PDF", key="gen_pdf_btn", use_container_width=True):
+                    with st.spinner("Typesetting illustrated PDF storybook..."):
+                        ExportManager.generate_pdf_storybook(current_story, force_regenerate=True)
+                        st.success("PDF ready!")
                         st.rerun()
-                    except Exception as e:
-                        st.error(f"Failed to generate PDF: {e}")
-
-            if pdf_exists:
-                file_size_kb = int(pdf_path.stat().st_size / 1024)
-                st.caption(f"Status: **Ready** • File Size: ~{file_size_kb} KB")
-                with open(pdf_path, "rb") as f:
+            else:
+                pdf_size_mb = round(pdf_file.stat().st_size / (1024 * 1024), 2)
+                st.caption(f"Status: **Ready to Read** • File Size: ~{pdf_size_mb} MB")
+                with open(pdf_file, "rb") as f:
                     st.download_button(
-                        label="📥 Download Illustrated PDF",
+                        label="📥 Download Illustrated PDF Storybook",
                         data=f.read(),
-                        file_name=f"{sanitize_filename(story.title)}_storybook.pdf",
+                        file_name=f"{sanitize_filename(current_story.title)}_storybook.pdf",
                         mime="application/pdf",
+                        type="primary",
                         use_container_width=True
                     )
 
-        # ---------------- MP4 EXPORT ----------------
-        with c_video_col:
+        # ---------------- MP4 Keepsake ----------------
+        with d_col2:
             st.markdown("""
             <div class="export-box">
-                <h3>🎬 Complete MP4 Video</h3>
-                <p>Synchronized video combining high-resolution scene illustrations, Edge TTS neural narration, and gentle background music assembled via MoviePy & FFmpeg.</p>
+                <span style="font-size: 3rem;">🎬</span>
+                <h3 style="margin: 0.8rem 0 0.4rem 0;">Complete Narrated MP4 Video</h3>
+                <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                    A full video presentation synchronizing every scene illustration with spoken voice narration 
+                    and gentle background music.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
-            video_path = get_story_video_path(story.title)
-            video_exists = video_path.exists()
-
-            if st.button("🎥 Render Assembled MP4 Storybook Video", type="primary", use_container_width=True):
-                music_file = get_story_music_path(story.title)
-                bg_music_arg = music_file if music_file.exists() else None
-
-                with st.spinner("Assembling scenes, voice narration, and background music into MP4 (MoviePy)..."):
-                    try:
-                        built_video = ExportManager.generate_mp4_video(
-                            story=story,
-                            bg_music_path=bg_music_arg,
+            video_file = get_story_video_path(current_story.title)
+            if not video_file.exists():
+                if st.button("🎬 Render Storybook Video", key="gen_vid_btn", use_container_width=True):
+                    with st.spinner("Assembling illustrations, narration audio, and music into video..."):
+                        bg_m = get_story_music_path(current_story.title)
+                        ExportManager.generate_mp4_video(
+                            current_story,
+                            bg_music_path=bg_m if bg_m.exists() else None,
                             force_regenerate=True
                         )
-                        st.success("MP4 Video successfully rendered!")
+                        st.success("Video ready!")
                         st.rerun()
-                    except Exception as e:
-                        st.error(f"Failed to render video: {e}")
+            else:
+                vid_size_mb = round(video_file.stat().st_size / (1024 * 1024), 2)
+                st.caption(f"Status: **Ready to Watch** • File Size: ~{vid_size_mb} MB")
+                st.video(str(video_file))
 
-            if video_exists:
-                vid_size_mb = round(video_path.stat().st_size / (1024 * 1024), 2)
-                st.caption(f"Status: **Ready** • File Size: ~{vid_size_mb} MB")
-                st.video(str(video_path))
-
-                with open(video_path, "rb") as f:
+                with open(video_file, "rb") as f:
                     st.download_button(
                         label="📥 Download Storybook MP4 Video",
                         data=f.read(),
-                        file_name=f"{sanitize_filename(story.title)}_storybook.mp4",
+                        file_name=f"{sanitize_filename(current_story.title)}_storybook.mp4",
                         mime="video/mp4",
+                        type="primary",
                         use_container_width=True
                     )

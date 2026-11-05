@@ -24,10 +24,23 @@ ASSETS_DIR = BASE_DIR / "assets"
 for folder in [STORIES_DIR, IMAGES_DIR, AUDIO_DIR, VIDEOS_DIR, PDFS_DIR, ASSETS_DIR]:
     folder.mkdir(parents=True, exist_ok=True)
 
-# API Keys & Endpoints
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-HF_TOKEN = os.getenv("HF_TOKEN", "")
-DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+# Helper to load secrets safely from environment or Streamlit secrets
+def get_secret(key: str, default: str = "") -> str:
+    """Retrieves secret from environment variables or Streamlit deployment secrets."""
+    val = os.getenv(key, "")
+    if not val:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and key in st.secrets:
+                val = str(st.secrets[key])
+        except Exception:
+            pass
+    return val or default
+
+# API Keys & Endpoints (backend-only, never exposed to user interface)
+GEMINI_API_KEY = get_secret("GEMINI_API_KEY", "")
+HF_TOKEN = get_secret("HF_TOKEN", "")
+DEFAULT_GEMINI_MODEL = get_secret("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Story Genres & Visual/Narrative DNA
 GENRES = {

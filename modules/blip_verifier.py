@@ -48,8 +48,9 @@ class BLIPVerifier:
         if self._local_model is None:
             from transformers import BlipProcessor, BlipForConditionalGeneration
             model_id = "Salesforce/blip-image-captioning-base"
-            self._local_processor = BlipProcessor.from_pretrained(model_id)
-            self._local_model = BlipForConditionalGeneration.from_pretrained(model_id)
+            # Only load local weights if already cached on disk, preventing huge network blocking
+            self._local_processor = BlipProcessor.from_pretrained(model_id, local_files_only=True)
+            self._local_model = BlipForConditionalGeneration.from_pretrained(model_id, local_files_only=True)
 
         raw_image = Image.open(image_path).convert("RGB")
         inputs = self._local_processor(raw_image, return_tensors="pt")
@@ -76,12 +77,20 @@ class BLIPVerifier:
             "Do not output commentary or quotation marks."
         )
 
-        response = client.models.generate_content(
-            model=config.DEFAULT_GEMINI_MODEL,
-            contents=[pil_img, prompt]
-        )
-        if response.text:
-            return response.text.strip().strip('"').strip("'")
+        models_to_try = [config.DEFAULT_GEMINI_MODEL, "gemini-2.5-flash", "gemini-flash-latest", "gemini-1.5-flash"]
+        seen = set()
+        deduped = [m for m in models_to_try if m and not (m in seen or seen.add(m))]
+
+        for m in deduped:
+            try:
+                response = client.models.generate_content(
+                    model=m,
+                    contents=[pil_img, prompt]
+                )
+                if response and response.text:
+                    return response.text.strip().strip('"').strip("'")
+            except Exception:
+                continue
         raise RuntimeError("Empty response from Gemini Vision.")
 
     def caption_image(self, image_path: Path) -> tuple[str, str]:
