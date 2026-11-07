@@ -77,7 +77,14 @@ class BLIPVerifier:
             "Do not output commentary or quotation marks."
         )
 
-        models_to_try = [config.DEFAULT_GEMINI_MODEL, "gemini-2.5-flash", "gemini-flash-latest", "gemini-1.5-flash"]
+        models_to_try = [
+            config.DEFAULT_GEMINI_MODEL,
+            "gemini-3.5-flash",
+            "gemini-flash-lite-latest",
+            "gemini-3.1-flash-lite",
+            "gemini-3.5-flash-lite",
+            "gemini-2.5-flash",
+        ]
         seen = set()
         deduped = [m for m in models_to_try if m and not (m in seen or seen.add(m))]
 
