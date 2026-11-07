@@ -98,8 +98,8 @@ class BLIPVerifier:
         Generates caption using the best available engine.
         Returns tuple: (caption_text, model_name).
         """
-        # 1. Hugging Face BLIP if HF_TOKEN is provided
-        if self.hf_token:
+        # 1. Hugging Face BLIP if HF_TOKEN is valid
+        if self.hf_token and self.hf_token != "your_huggingface_api_key_here":
             try:
                 cap = self.generate_caption_hf(image_path)
                 return cap, "Salesforce BLIP (Hugging Face API)"

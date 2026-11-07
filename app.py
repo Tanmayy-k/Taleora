@@ -336,16 +336,42 @@ if nav_selection == "✨ Create Story":
                 st.error(f"Story generation failed: {e}")
 
             if new_story:
-                # 2. Generate Illustrations (1024x1024)
-                p_bar.progress(0.40, text=f"🎨 Step 2/4: Painting illustrations for '{new_story.title}'...")
-                try:
-                    img_gen = ImageGenerator()
-                    img_gen.generate_all_scenes(story=new_story, engine="pollinations", force_regenerate=True)
-                except Exception as e:
-                    st.warning(f"Live illustration warning: {e}. Fallback art cards prepared.")
+                # 2. Generate Illustrations (1024x1024 genuine images for every scene)
+                img_gen = ImageGenerator()
+                def update_art_progress(curr, total, msg):
+                    pct = 0.20 + 0.35 * (curr / total)
+                    p_bar.progress(min(pct, 0.58), text=f"🎨 Step 2/5: {msg}")
 
-                # 3. Generate Audio & Music
-                p_bar.progress(0.70, text="🎙️ Step 3/4: Voicing narration and composing background ambience...")
+                try:
+                    img_gen.generate_all_scenes(
+                        story=new_story,
+                        engine="pollinations",
+                        progress_callback=update_art_progress,
+                        force_regenerate=True
+                    )
+                except Exception as e:
+                    st.warning(f"Illustration notice: {e}")
+
+                # 3. Salesforce BLIP Visual Verification (Requirement U3)
+                p_bar.progress(0.60, text="🔍 Step 3/5: Running Salesforce BLIP visual verification on all scenes...")
+                try:
+                    verifier = BLIPVerifier()
+                    st.session_state["verification_results"] = {}
+                    for sc in new_story.scenes:
+                        img_p = get_scene_image_path(new_story.title, sc.scene_number)
+                        if img_p.exists():
+                            st.session_state["verification_results"][sc.scene_number] = verifier.verify_scene_image(
+                                scene_number=sc.scene_number,
+                                image_path=img_p,
+                                intended_text=sc.narrative_text,
+                                image_prompt=sc.image_prompt,
+                                characters_expected=sc.characters_present
+                            )
+                except Exception as e:
+                    pass
+
+                # 4. Generate Audio & Music
+                p_bar.progress(0.72, text="🎙️ Step 4/5: Voicing narration and composing background ambience...")
                 try:
                     audio_gen = AudioGenerator(voice=active_voice)
                     audio_gen.generate_all_narrations(story=new_story, voice=active_voice, force_regenerate=True)
@@ -358,8 +384,8 @@ if nav_selection == "✨ Create Story":
                 except Exception:
                     pass
 
-                # 4. Generate PDF & MP4 Keepsakes
-                p_bar.progress(0.90, text="📦 Step 4/4: Assembling illustrated PDF and video...")
+                # 5. Generate PDF & MP4 Keepsakes
+                p_bar.progress(0.88, text="📦 Step 5/5: Assembling illustrated PDF and video...")
                 try:
                     ExportManager.generate_pdf_storybook(story=new_story, force_regenerate=True)
                 except Exception as e:
@@ -483,19 +509,73 @@ elif nav_selection == "📖 My Storybook":
             else:
                 st.info("Illustration generating...")
 
-            # Single-click scene redraw
+            # Centerpiece BLIP Visual Verification (Requirement U3)
+            v_res = st.session_state.get("verification_results", {}).get(current_scene.scene_number)
+            if v_res:
+                badge_class = "badge-verified" if v_res["status"] == "VERIFIED" else "badge-flagged"
+                badge_icon = "✅" if v_res["status"] == "VERIFIED" else "⚠️"
+                st.markdown(
+                    f"""<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.75rem 1rem; margin-top: 0.6rem; margin-bottom: 0.6rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #475569;">🔍 BLIP Visual Verification (U3)</span>
+                            <span class="{badge_class}">{badge_icon} {v_res['status']} ({v_res['similarity_score']}%)</span>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #334155; line-height: 1.4;">
+                            <strong>AI Caption:</strong> <em>"{v_res['blip_caption']}"</em><br/>
+                            <span style="font-size: 0.78rem; color: #64748b;">Inspector: {v_res.get('model_used', 'Salesforce BLIP')}</span>
+                        </div>
+                    </div>""",
+                    unsafe_allow_html=True
+                )
+            elif scene_img_path.exists():
+                if st.button("🔍 Verify with BLIP Caption", key=f"quick_verify_{current_scene.scene_number}", width="stretch"):
+                    with st.spinner("Inspecting illustration with Salesforce BLIP..."):
+                        verifier = BLIPVerifier()
+                        if "verification_results" not in st.session_state:
+                            st.session_state["verification_results"] = {}
+                        st.session_state["verification_results"][current_scene.scene_number] = verifier.verify_scene_image(
+                            scene_number=current_scene.scene_number,
+                            image_path=scene_img_path,
+                            intended_text=current_scene.narrative_text,
+                            image_prompt=current_scene.image_prompt,
+                            characters_expected=current_scene.characters_present
+                        )
+                        st.rerun()
+
+            # Single-click scene redraw with automatic re-verification
             if st.button("🎨 Redraw this illustration", key=f"redraw_btn_{current_scene.scene_number}", width="stretch"):
                 with st.spinner("Painting a fresh illustration for this chapter..."):
                     import random
                     img_gen = ImageGenerator()
-                    img_gen.generate_scene_image(
+                    new_seed = random.randint(1000, 999999)
+                    new_img_path = img_gen.generate_scene_image(
                         scene=current_scene,
                         story_title=current_story.title,
+                        character_bible=current_story.character_bible,
                         engine="pollinations",
                         force_regenerate=True,
-                        seed=random.randint(1000, 999999)
+                        seed=new_seed
                     )
-                    st.success("Fresh illustration painted!")
+                    # Automatically re-verify with BLIP
+                    try:
+                        verifier = BLIPVerifier()
+                        if "verification_results" not in st.session_state:
+                            st.session_state["verification_results"] = {}
+                        st.session_state["verification_results"][current_scene.scene_number] = verifier.verify_scene_image(
+                            scene_number=current_scene.scene_number,
+                            image_path=new_img_path,
+                            intended_text=current_scene.narrative_text,
+                            image_prompt=current_scene.image_prompt,
+                            characters_expected=current_scene.characters_present
+                        )
+                    except Exception:
+                        pass
+                    # Sync PDF keepsakes
+                    try:
+                        ExportManager.generate_pdf_storybook(current_story, force_regenerate=True)
+                    except Exception:
+                        pass
+                    st.success("Fresh illustration painted and verified!")
                     st.rerun()
 
         with reader_col_text:

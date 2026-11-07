@@ -40,6 +40,7 @@ def get_secret(key: str, default: str = "") -> str:
 # API Keys & Endpoints (backend-only, never exposed to user interface)
 GEMINI_API_KEY = get_secret("GEMINI_API_KEY", "")
 HF_TOKEN = get_secret("HF_TOKEN", "")
+POLLINATIONS_API_KEY = get_secret("POLLINATIONS_API_KEY", "")
 DEFAULT_GEMINI_MODEL = get_secret("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Story Genres & Visual/Narrative DNA

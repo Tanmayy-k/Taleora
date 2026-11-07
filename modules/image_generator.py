@@ -2,33 +2,43 @@
 Image Generator Module for Taleora (Satisfies Requirement U3).
 Generates high-resolution scene illustrations enforcing character consistency,
 with multi-engine support (Pollinations free high-speed SDXL & Hugging Face Inference API).
+Strictly generates genuine AI illustrations for every scene with zero placeholder fallbacks.
 """
 import urllib.parse
 import time
+import re
 import requests
 from pathlib import Path
-from typing import Optional, Dict, Callable
+from typing import Optional, Dict, Callable, List
 from PIL import Image
 import io
 
 import config
-from modules.prompt_engine import StoryBook, Scene
+from modules.prompt_engine import StoryBook, Scene, Character
 from modules.story_generator import sanitize_filename
 
 
 class ImageGenerator:
     """Manages scene illustration generation and disk caching."""
 
-    def __init__(self, hf_token: Optional[str] = None):
+    def __init__(self, hf_token: Optional[str] = None, pollinations_api_key: Optional[str] = None):
         self.hf_token = hf_token or config.HF_TOKEN
-        self.default_engine = "pollinations"  # Default zero-cost, high-speed engine
+        self.pollinations_api_key = pollinations_api_key or config.POLLINATIONS_API_KEY
+        self.default_engine = "pollinations"
 
-    def _generate_pollinations(self, prompt: str, width: int = 1024, height: int = 1024, seed: Optional[int] = None) -> bytes:
+    def _generate_pollinations(
+        self,
+        prompt: str,
+        width: int = 1024,
+        height: int = 1024,
+        seed: Optional[int] = None,
+        max_retries: int = 4,
+        progress_callback: Optional[Callable[[str], None]] = None
+    ) -> bytes:
         """
         Generates an illustration via Pollinations.ai with enhanced storybook prompt tuning.
-        100% free, zero authentication required, reliable uptime.
+        Handles IP rate limits with intelligent retry and cooldown countdown.
         """
-        # Append quality enhancements
         enhanced_prompt = (
             f"{prompt}, award-winning children's storybook illustration, soft painterly gouache and watercolor texture, "
             f"rich vibrant harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, "
@@ -39,48 +49,72 @@ class ImageGenerator:
         url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width={width}&height={height}&nologo=true"
         if seed is not None:
             url += f"&seed={seed}"
+        if self.pollinations_api_key:
+            url += f"&key={self.pollinations_api_key}"
 
         headers = {
             "User-Agent": "Taleora-Storybook-Generator/1.0"
         }
+        if self.pollinations_api_key:
+            headers["Authorization"] = f"Bearer {self.pollinations_api_key}"
 
-        response = requests.get(url, headers=headers, timeout=20)
-        if response.status_code != 200:
-            raise RuntimeError(f"Pollinations image generation failed (HTTP {response.status_code}): {response.text[:200]}")
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, headers=headers, timeout=45)
 
-        return response.content
+                # Check for rate limit or payment requirement (HTTP 402 or 429)
+                if response.status_code in (402, 429):
+                    match = re.search(r"Retry after (\d+)s", response.text)
+                    cooldown = int(match.group(1)) + 2 if match else 35
 
-    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 1024, height: int = 1024) -> bytes:
-        """Creates a rich, colorful storybook visual card as an emergency offline fallback."""
-        from PIL import ImageDraw
-        img = Image.new("RGB", (width, height), color=(26, 26, 64))
-        draw = ImageDraw.Draw(img)
-        # Decorative border
-        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=6)
-        draw.rectangle([(32, 32), (width - 32, height - 32)], outline=(199, 210, 254), width=3)
-        # Title and summary
-        draw.text((80, 360), title[:40], fill=(254, 240, 138))
-        draw.text((80, 440), text[:150] + "...", fill=(241, 245, 249))
-        draw.text((80, 580), "Taleora Storybook Illustration", fill=(165, 180, 252))
-        
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        return buf.getvalue()
+                    if attempt < max_retries - 1:
+                        # Report cooldown progress every 5 seconds
+                        step_interval = 5
+                        for s_left in range(cooldown, 0, -step_interval):
+                            if progress_callback:
+                                progress_callback(f"Free image quota cooldown active. Retrying in {s_left}s...")
+                            time.sleep(min(step_interval, s_left))
+                        continue
+                    else:
+                        raise RuntimeError(
+                            f"Pollinations rate limit reached after {max_retries} attempts: {response.text[:200]}"
+                        )
+
+                if response.status_code != 200:
+                    raise RuntimeError(
+                        f"Pollinations image generation failed (HTTP {response.status_code}): {response.text[:200]}"
+                    )
+
+                # Verify that response is valid image data (not empty or error payload)
+                if len(response.content) < 5000:
+                    raise RuntimeError(
+                        f"Pollinations returned invalid small payload ({len(response.content)} bytes)"
+                    )
+
+                return response.content
+
+            except requests.exceptions.RequestException as req_err:
+                if attempt < max_retries - 1:
+                    time.sleep(3)
+                    continue
+                raise RuntimeError(f"Network error contacting image generator: {req_err}")
+
+        raise RuntimeError("Image generation failed after maximum retries.")
 
     def _generate_hf(self, prompt: str) -> bytes:
         """
         Generates an illustration via Hugging Face Inference API using SDXL base.
-        Requires HF_TOKEN.
+        Requires valid HF_TOKEN.
         """
-        if not self.hf_token:
-            raise ValueError("HF_TOKEN is required for Hugging Face Inference engine.")
+        if not self.hf_token or self.hf_token == "your_huggingface_api_key_here":
+            raise ValueError("A valid HF_TOKEN is required for Hugging Face Inference engine.")
 
         api_url = "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0"
         headers = {"Authorization": f"Bearer {self.hf_token}"}
         payload = {
             "inputs": prompt,
             "parameters": {
-                "negative_prompt": "blurry, low quality, distorted, extra limbs, bad anatomy, text, watermark",
+                "negative_prompt": "blurry, low quality, distorted, extra limbs, bad anatomy, text, watermark, photo",
             }
         }
 
@@ -94,55 +128,75 @@ class ImageGenerator:
         self,
         scene: Scene,
         story_title: str,
+        character_bible: Optional[List[Character]] = None,
         engine: str = "pollinations",
         force_regenerate: bool = False,
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
+        progress_callback: Optional[Callable[[str], None]] = None
     ) -> Path:
         """
-        Generates and saves an illustration for a specific scene.
+        Generates and saves a genuine AI illustration for a specific scene.
+        Guarantees that placeholder cards are never used.
         Returns the absolute file path of the saved PNG image.
         """
         safe_title = sanitize_filename(story_title)
         filename = f"{safe_title}_scene_{scene.scene_number}.png"
         filepath = config.IMAGES_DIR / filename
 
-        # If image already exists and not forcing regeneration, return existing path
+        # If image already exists, is a genuine illustration (> 50KB), and not forcing regeneration, return existing path
         if filepath.exists() and not force_regenerate:
-            return filepath
+            if filepath.stat().st_size > 50000:
+                return filepath
 
-        prompt = scene.image_prompt
+        # Build rich, character-consistent prompt
+        prompt_parts = [scene.image_prompt]
+        if character_bible:
+            for char in character_bible:
+                if hasattr(char, "name") and (char.name in scene.characters_present or char.name in scene.narrative_text):
+                    prompt_parts.append(
+                        f"Character {char.name}: {char.visual_appearance}, wearing {char.signature_clothing}, with {char.distinct_accessories}"
+                    )
 
-        # Attempt generation with primary engine, fallback if error
+        full_prompt = ", ".join(prompt_parts)
+
+        # Attempt generation with primary engine
         image_bytes = None
         last_error = None
 
-        if engine == "huggingface" and self.hf_token:
+        # 1. Try Hugging Face if explicitly selected and token is configured
+        if engine == "huggingface" and self.hf_token and self.hf_token != "your_huggingface_api_key_here":
             try:
-                image_bytes = self._generate_hf(prompt)
+                image_bytes = self._generate_hf(full_prompt)
             except Exception as e:
                 last_error = e
-                # Fallback to pollinations
-                image_bytes = self._generate_pollinations(prompt, seed=seed)
-        else:
-            try:
-                image_bytes = self._generate_pollinations(prompt, seed=seed)
-            except Exception as e:
-                last_error = e
-                # If pollinations fails and HF token is present, fallback to HF
-                if self.hf_token:
-                    try:
-                        image_bytes = self._generate_hf(prompt)
-                    except Exception:
-                        pass
-                if not image_bytes:
-                    image_bytes = self._create_stylized_card(scene.title, scene.narrative_text, prompt)
 
+        # 2. Try Pollinations (primary engine)
         if not image_bytes:
-            image_bytes = self._create_stylized_card(scene.title, scene.narrative_text, prompt)
+            try:
+                image_bytes = self._generate_pollinations(
+                    prompt=full_prompt,
+                    seed=seed,
+                    progress_callback=progress_callback
+                )
+            except Exception as e:
+                last_error = e
 
-        # Validate image content with Pillow and save
+        # 3. If Pollinations failed and HF was not tried yet, try HF if token present
+        if not image_bytes and self.hf_token and self.hf_token != "your_huggingface_api_key_here":
+            try:
+                image_bytes = self._generate_hf(full_prompt)
+            except Exception as e:
+                last_error = e
+
+        # NEVER silently fall back to a placeholder card (Requirements 4 & 5)
+        if not image_bytes:
+            raise RuntimeError(
+                f"Failed to generate genuine AI illustration for Scene {scene.scene_number}: {last_error}"
+            )
+
+        # Validate image content with Pillow and save as PNG
         try:
-            pil_image = Image.open(io.BytesIO(image_bytes))
+            pil_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
             pil_image.save(filepath, format="PNG")
         except Exception as e:
             raise RuntimeError(f"Failed to process and save image: {e}")
@@ -157,24 +211,29 @@ class ImageGenerator:
         force_regenerate: bool = False
     ) -> Dict[int, Path]:
         """
-        Generates illustrations for all scenes in a StoryBook sequentially.
+        Generates genuine illustrations for all scenes in a StoryBook sequentially.
+        Ensures each scene has an authentic AI-generated image on disk.
         """
         results = {}
         total = len(story.scenes)
 
         for idx, scene in enumerate(story.scenes):
             if progress_callback:
-                progress_callback(idx + 1, total, f"Generating Scene {scene.scene_number}: {scene.title}...")
+                progress_callback(idx + 1, total, f"Painting Chapter {scene.scene_number}/{total}: {scene.title}...")
+
+            def sub_callback(msg: str):
+                if progress_callback:
+                    progress_callback(idx + 1, total, f"Painting Chapter {scene.scene_number}/{total} ({msg})...")
 
             img_path = self.generate_scene_image(
                 scene=scene,
                 story_title=story.title,
+                character_bible=story.character_bible,
                 engine=engine,
                 force_regenerate=force_regenerate,
-                seed=42 + scene.scene_number  # Consistent seed per scene unless regenerated
+                seed=42 + scene.scene_number * 17,  # Distinct seed per scene to ensure variety while retaining style
+                progress_callback=sub_callback
             )
             results[scene.scene_number] = img_path
-            # Polite pause between generations to respect rate limits
-            time.sleep(2)
 
         return results
