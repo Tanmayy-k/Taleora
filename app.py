@@ -5,6 +5,7 @@ A minimal, premium generative storytelling experience.
 """
 import streamlit as st
 import json
+import time
 from pathlib import Path
 from PIL import Image
 
@@ -47,8 +48,8 @@ st.markdown("""
     /* Minimal Hero */
     .hero-container {
         text-align: center;
-        padding: 2.2rem 1.5rem 1.5rem 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 2.2rem 1.5rem 1.2rem 1.5rem;
+        margin-bottom: 1.2rem;
     }
 
     .hero-title {
@@ -65,15 +66,6 @@ st.markdown("""
         font-weight: 600;
         color: #475569;
         margin-top: 0.4rem;
-    }
-
-    /* Centerpiece Illustration Frame */
-    .illustration-frame {
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        margin-bottom: 1rem;
     }
 
     /* Story Narrative Typography */
@@ -175,10 +167,10 @@ with st.sidebar:
     st.caption("Turn three words into a story.")
     st.markdown("---")
 
-    current_story: StoryBook = st.session_state.get("current_story")
-    if current_story:
-        st.markdown(f"**📖 Current Story:** {current_story.title}")
-        st.caption(f"{current_story.genre} • {current_story.target_audience}")
+    active_story_preview: StoryBook = st.session_state.get("current_story")
+    if active_story_preview:
+        st.markdown(f"**📖 Active Story:** {active_story_preview.title}")
+        st.caption(f"{active_story_preview.genre} • {active_story_preview.target_audience}")
         st.markdown("---")
 
     st.markdown("##### 🎙️ Storyteller Voice")
@@ -217,7 +209,7 @@ with st.sidebar:
             label_visibility="collapsed"
         )
         if selected_story_name != "-- Open a saved book --":
-            if st.button("Open Book", use_container_width=True):
+            if st.button("Open Book", width="stretch"):
                 try:
                     loaded = StoryGenerator.load_story_from_disk(story_options[selected_story_name])
                     st.session_state["current_story"] = loaded
@@ -225,10 +217,10 @@ with st.sidebar:
                     st.session_state["verification_results"] = {}
                     st.session_state["safety_report"] = None
                     st.session_state["originality_report"] = None
-                    st.success(f"Opened '{loaded.title}'!")
+                    st.session_state["target_nav"] = "📖 My Storybook"
                     st.rerun()
-                except Exception:
-                    st.error("Could not load the selected story.")
+                except Exception as e:
+                    st.error(f"Could not load the selected story: {e}")
 
 
 # ---------------------------------------------------------
@@ -243,31 +235,47 @@ st.markdown("""
 
 
 # ---------------------------------------------------------
-# Minimal Navigation (Only 2 Tabs)
+# Navigation (State-Managed Segmented Control)
 # ---------------------------------------------------------
-nav_create, nav_read = st.tabs(["✨ Create Story", "📖 My Storybook"])
+# Process pending navigation request BEFORE widget instantiation
+if "target_nav" in st.session_state and st.session_state["target_nav"]:
+    st.session_state["active_nav"] = st.session_state.pop("target_nav")
+
+if "active_nav" not in st.session_state:
+    st.session_state["active_nav"] = "✨ Create Story"
+
+nav_selection = st.segmented_control(
+    "Navigation View",
+    options=["✨ Create Story", "📖 My Storybook"],
+    key="active_nav",
+    label_visibility="collapsed",
+    width="stretch"
+)
 
 
 # =========================================================
-# TAB 1: CREATE STORY (STEP 1 — CREATE)
+# VIEW 1: CREATE STORY (STEP 1 — CREATE)
 # =========================================================
-with nav_create:
-    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
+if nav_selection == "✨ Create Story":
+    st.markdown("<div style='margin-top: 0.8rem;'></div>", unsafe_allow_html=True)
 
     # Clickable inspiration presets
     c_p1, c_p2, c_p3 = st.columns(3)
-    if c_p1.button("🌲 Try: Enchanted Woods", use_container_width=True):
+    if c_p1.button("🌲 Try: Enchanted Woods", width="stretch"):
         st.session_state["kw1"] = "Glowing Acorn"
         st.session_state["kw2"] = "Talking Fox"
         st.session_state["kw3"] = "Crystal Stream"
-    if c_p2.button("🌌 Try: Star Cruiser", use_container_width=True):
+        st.rerun()
+    if c_p2.button("🌌 Try: Star Cruiser", width="stretch"):
         st.session_state["kw1"] = "Pocket Robot"
         st.session_state["kw2"] = "Starlight Compass"
         st.session_state["kw3"] = "Singing Asteroid"
-    if c_p3.button("🐬 Try: Coral Kingdom", use_container_width=True):
+        st.rerun()
+    if c_p3.button("🐬 Try: Coral Kingdom", width="stretch"):
         st.session_state["kw1"] = "Golden Shell"
         st.session_state["kw2"] = "Friendly Dolphin"
         st.session_state["kw3"] = "Sunken Castle"
+        st.rerun()
 
     # 3 Keyword Inputs
     col_k1, col_k2, col_k3 = st.columns(3)
@@ -296,7 +304,7 @@ with nav_create:
     st.markdown("<div style='margin-top: 0.8rem;'></div>", unsafe_allow_html=True)
 
     # One Prominent Button
-    create_button = st.button("✨ Create My Story", type="primary", use_container_width=True)
+    create_button = st.button("✨ Create My Story", type="primary", width="stretch")
 
     if create_button:
         raw_kws = [kw1, kw2, kw3]
@@ -305,60 +313,76 @@ with nav_create:
         if not valid:
             st.error(f"Please provide exactly three keywords: {val_msg}")
         else:
-            progress_box = st.empty()
-            with progress_box.container():
-                p_bar = st.progress(0.15)
-                st.info("Writing your original story and establishing characters...")
+            p_bar = st.progress(0.10, text="✨ Step 1/4: Writing original story and establishing characters with Gemini...")
+            new_story = None
 
+            try:
+                # 1. Generate Story
+                generator = StoryGenerator()
+                new_story = generator.generate_story(
+                    keywords=clean_kws,
+                    genre=selected_genre,
+                    audience=selected_audience
+                )
+                # Immediately persist to session state so story is never lost
+                st.session_state["current_story"] = new_story
+                st.session_state["current_page"] = 1
+                st.session_state["verification_results"] = {}
+                st.session_state["safety_report"] = None
+                st.session_state["originality_report"] = None
+
+            except Exception as e:
+                p_bar.empty()
+                st.error(f"Story generation failed: {e}")
+
+            if new_story:
+                # 2. Generate Illustrations (1024x1024)
+                p_bar.progress(0.40, text=f"🎨 Step 2/4: Painting illustrations for '{new_story.title}'...")
                 try:
-                    # 1. Generate Story
-                    generator = StoryGenerator()
-                    new_story = generator.generate_story(
-                        keywords=clean_kws,
-                        genre=selected_genre,
-                        audience=selected_audience
-                    )
-                    p_bar.progress(0.40)
-                    st.info(f"Painting illustrated storybook pages for '{new_story.title}'...")
-
-                    # 2. Generate Illustrations (1024x1024)
                     img_gen = ImageGenerator()
                     img_gen.generate_all_scenes(story=new_story, engine="pollinations", force_regenerate=True)
-                    p_bar.progress(0.70)
-                    st.info("Voicing narration and composing background ambience...")
+                except Exception as e:
+                    st.warning(f"Live illustration warning: {e}. Fallback art cards prepared.")
 
-                    # 3. Generate Audio & Music
+                # 3. Generate Audio & Music
+                p_bar.progress(0.70, text="🎙️ Step 3/4: Voicing narration and composing background ambience...")
+                try:
                     audio_gen = AudioGenerator(voice=active_voice)
                     audio_gen.generate_all_narrations(story=new_story, voice=active_voice, force_regenerate=True)
+                except Exception as e:
+                    st.warning(f"Narration synthesis warning: {e}.")
+
+                try:
                     music_gen = MusicGenerator()
                     music_gen.generate_story_music(story=new_story, duration_seconds=25, force_regenerate=True)
-                    p_bar.progress(0.85)
-                    st.info("Assembling illustrated PDF and video...")
+                except Exception:
+                    pass
 
-                    # 4. Generate PDF & MP4 Keepsakes
+                # 4. Generate PDF & MP4 Keepsakes
+                p_bar.progress(0.90, text="📦 Step 4/4: Assembling illustrated PDF and video...")
+                try:
                     ExportManager.generate_pdf_storybook(story=new_story, force_regenerate=True)
+                except Exception as e:
+                    st.warning(f"PDF creation warning: {e}.")
+
+                try:
                     music_file = get_story_music_path(new_story.title)
                     ExportManager.generate_mp4_video(
                         story=new_story,
                         bg_music_path=music_file if music_file.exists() else None,
                         force_regenerate=True
                     )
-                    p_bar.progress(1.0)
-
-                    # Update session state
-                    st.session_state["current_story"] = new_story
-                    st.session_state["current_page"] = 1
-                    st.session_state["verification_results"] = {}
-                    st.session_state["safety_report"] = None
-                    st.session_state["originality_report"] = None
-
-                    progress_box.empty()
-                    st.balloons()
-                    st.success(f"🎉 **{new_story.title}** is ready! Click on the **'📖 My Storybook'** tab above to enjoy your story.")
-
                 except Exception as e:
-                    progress_box.empty()
-                    st.error(f"Could not generate the storybook: {e}")
+                    st.warning(f"Video assembly warning: {e}. You can retry video compilation from Keepsakes.")
+
+                p_bar.progress(1.0, text="🌟 Storybook ready!")
+                time.sleep(0.5)
+                p_bar.empty()
+
+                # Switch directly to storybook view and rerun
+                st.session_state["target_nav"] = "📖 My Storybook"
+                st.session_state["just_created"] = True
+                st.rerun()
 
     st.markdown("---")
 
@@ -376,13 +400,15 @@ with nav_create:
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Read Barnaby's Story", key="load_barnaby_minimal", use_container_width=True):
+        if st.button("Read Barnaby's Story", key="load_barnaby_minimal", width="stretch"):
             for f in saved_files:
                 if "Barnaby" in f.name:
                     st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
                     st.session_state["current_page"] = 1
                     st.session_state["verification_results"] = {}
-                    st.success("Loaded 'Barnaby and the Whispering Key'! Switch to 'My Storybook' tab to read.")
+                    st.session_state["safety_report"] = None
+                    st.session_state["originality_report"] = None
+                    st.session_state["target_nav"] = "📖 My Storybook"
                     st.rerun()
 
     with sc2:
@@ -395,23 +421,36 @@ with nav_create:
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Read Astro's Story", key="load_astro_minimal", use_container_width=True):
+        if st.button("Read Astro's Story", key="load_astro_minimal", width="stretch"):
             for f in saved_files:
                 if "Astro" in f.name:
                     st.session_state["current_story"] = StoryGenerator.load_story_from_disk(f)
                     st.session_state["current_page"] = 1
                     st.session_state["verification_results"] = {}
-                    st.success("Loaded 'Astro and the Singing Asteroid'! Switch to 'My Storybook' tab to read.")
+                    st.session_state["safety_report"] = None
+                    st.session_state["originality_report"] = None
+                    st.session_state["target_nav"] = "📖 My Storybook"
                     st.rerun()
 
 
 # =========================================================
-# TAB 2: MY STORYBOOK (STEP 2 — ENJOY & STEP 3 — DOWNLOAD)
+# VIEW 2: MY STORYBOOK (STEP 2 — ENJOY & STEP 3 — DOWNLOAD)
 # =========================================================
-with nav_read:
+elif nav_selection == "📖 My Storybook":
+    current_story: StoryBook = st.session_state.get("current_story")
+
     if not current_story:
-        st.info("👈 No storybook opened yet. Enter three words in **Create Story** or pick a featured storybook to begin!")
+        st.info("👈 No storybook opened yet. Enter three words in **Create Story** or pick a featured storybook to begin reading!")
+        if st.button("✨ Go to Create Story", width="stretch"):
+            st.session_state["target_nav"] = "✨ Create Story"
+            st.rerun()
     else:
+        # Celebration banner if just generated
+        if st.session_state.get("just_created"):
+            st.balloons()
+            st.success(f"🎉 **{current_story.title}** is ready! Enjoy your illustrated audio storybook below.")
+            st.session_state["just_created"] = False
+
         # Title and Logline
         st.markdown(f"## 📖 {current_story.title}")
         st.markdown(f"*{current_story.logline}*")
@@ -439,13 +478,13 @@ with nav_read:
                 st.image(
                     str(scene_img_path),
                     caption=f"Chapter {current_scene.scene_number}: {current_scene.title}",
-                    use_container_width=True
+                    width="stretch"
                 )
             else:
                 st.info("Illustration generating...")
 
             # Single-click scene redraw
-            if st.button("🎨 Redraw this illustration", key=f"redraw_btn_{current_scene.scene_number}", use_container_width=True):
+            if st.button("🎨 Redraw this illustration", key=f"redraw_btn_{current_scene.scene_number}", width="stretch"):
                 with st.spinner("Painting a fresh illustration for this chapter..."):
                     import random
                     img_gen = ImageGenerator()
@@ -488,7 +527,7 @@ with nav_read:
         nav_c1, nav_c2, nav_c3 = st.columns([1, 2, 1])
 
         with nav_c1:
-            if st.button("⬅️ Previous Page", disabled=(page_idx <= 1), use_container_width=True):
+            if st.button("⬅️ Previous Page", disabled=(page_idx <= 1), width="stretch"):
                 st.session_state["current_page"] = max(page_idx - 1, 1)
                 st.rerun()
 
@@ -501,7 +540,7 @@ with nav_read:
             )
 
         with nav_c3:
-            if st.button("Next Page ➡️", disabled=(page_idx >= total_pages), use_container_width=True):
+            if st.button("Next Page ➡️", disabled=(page_idx >= total_pages), width="stretch"):
                 st.session_state["current_page"] = min(page_idx + 1, total_pages)
                 st.rerun()
 
@@ -541,7 +580,7 @@ with nav_read:
             """, unsafe_allow_html=True)
             pdf_file = get_story_pdf_path(current_story.title)
             if not pdf_file.exists():
-                if st.button("📄 Prepare PDF", key="btn_prep_pdf", use_container_width=True):
+                if st.button("📄 Prepare PDF", key="btn_prep_pdf", width="stretch"):
                     with st.spinner("Typesetting illustrated PDF..."):
                         ExportManager.generate_pdf_storybook(current_story, force_regenerate=True)
                         st.rerun()
@@ -553,7 +592,7 @@ with nav_read:
                         file_name=f"{sanitize_filename(current_story.title)}_storybook.pdf",
                         mime="application/pdf",
                         type="primary",
-                        use_container_width=True
+                        width="stretch"
                     )
 
         # Option B: Download MP4
@@ -571,7 +610,7 @@ with nav_read:
             """, unsafe_allow_html=True)
             video_file = get_story_video_path(current_story.title)
             if not video_file.exists():
-                if st.button("🎬 Render Video", key="btn_prep_vid", use_container_width=True):
+                if st.button("🎬 Render Video", key="btn_prep_vid", width="stretch"):
                     with st.spinner("Rendering MP4 video with narration and music..."):
                         bg_m = get_story_music_path(current_story.title)
                         ExportManager.generate_mp4_video(
@@ -588,7 +627,7 @@ with nav_read:
                         file_name=f"{sanitize_filename(current_story.title)}_storybook.mp4",
                         mime="video/mp4",
                         type="primary",
-                        use_container_width=True
+                        width="stretch"
                     )
 
         st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
@@ -617,7 +656,7 @@ with nav_read:
             q_col1, q_col2, q_col3 = st.columns(3)
             with q_col1:
                 st.markdown("##### 🛡️ Child Safety")
-                if st.button("Run Safety Check", key="run_safety_subtle", use_container_width=True):
+                if st.button("Run Safety Check", key="run_safety_subtle", width="stretch"):
                     s_filter = ChildSafetyFilter()
                     st.session_state["safety_report"] = s_filter.evaluate_story_safety(current_story)
                 s_rep: SafetyReport = st.session_state.get("safety_report")
@@ -629,7 +668,7 @@ with nav_read:
 
             with q_col2:
                 st.markdown("##### 🎨 BLIP Visual Accuracy")
-                if st.button("Inspect Art", key="run_art_subtle", use_container_width=True):
+                if st.button("Inspect Art", key="run_art_subtle", width="stretch"):
                     verifier = BLIPVerifier()
                     if "verification_results" not in st.session_state:
                         st.session_state["verification_results"] = {}
@@ -650,7 +689,7 @@ with nav_read:
 
             with q_col3:
                 st.markdown("##### ✨ Story Originality")
-                if st.button("Check Originality", key="run_orig_subtle", use_container_width=True):
+                if st.button("Check Originality", key="run_orig_subtle", width="stretch"):
                     o_checker = OriginalityChecker()
                     st.session_state["originality_report"] = o_checker.evaluate_story_originality(current_story)
                 o_rep: OriginalityReport = st.session_state.get("originality_report")

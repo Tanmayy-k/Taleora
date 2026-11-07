@@ -44,7 +44,7 @@ class ImageGenerator:
             "User-Agent": "Taleora-Storybook-Generator/1.0"
         }
 
-        response = requests.get(url, headers=headers, timeout=45)
+        response = requests.get(url, headers=headers, timeout=20)
         if response.status_code != 200:
             raise RuntimeError(f"Pollinations image generation failed (HTTP {response.status_code}): {response.text[:200]}")
 
