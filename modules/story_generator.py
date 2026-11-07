@@ -300,6 +300,15 @@ class StoryGenerator:
         return filepath
 
     @staticmethod
+    def list_saved_stories() -> List[Path]:
+        """Returns saved story JSON paths, newest timestamped files first."""
+        return sorted(
+            config.STORIES_DIR.glob("*.json"),
+            key=lambda filepath: filepath.name,
+            reverse=True,
+        )
+
+    @staticmethod
     def load_story_from_disk(filepath: Path) -> StoryBook:
         """Loads and validates a story JSON file from disk."""
         with open(filepath, "r", encoding="utf-8") as f:

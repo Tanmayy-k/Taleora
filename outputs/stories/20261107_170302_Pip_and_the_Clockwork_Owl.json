@@ -1,0 +1,91 @@
+{
+  "title": "Pip and the Clockwork Owl",
+  "logline": "A curious boy and a mechanical bird work together in a secret library to catch a magical key.",
+  "genre": "Fantasy",
+  "target_audience": "Kids (Ages 6-8)",
+  "keywords": [
+    "Clockwork Owl",
+    "Floating Key",
+    "Secret Attic Library"
+  ],
+  "character_bible": [
+    {
+      "name": "Pip",
+      "role": "Curious Boy Protagonist",
+      "visual_appearance": "Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose",
+      "signature_clothing": "Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs",
+      "distinct_accessories": "Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots",
+      "personality_trait": "Inquisitive and clever"
+    },
+    {
+      "name": "Barnaby",
+      "role": "Clockwork Owl Sidekick",
+      "visual_appearance": "Small mechanical owl crafted from polished golden brass feathers, visible tiny silver gears at his wing joints, and glowing sapphire-blue glass eyes",
+      "signature_clothing": "Polished metallic body with intricate filigree patterns",
+      "distinct_accessories": "A tiny silver wind-up key slot positioned neatly on his back",
+      "personality_trait": "Wise and playful"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Hidden Door",
+      "narrative_text": "On a rainy afternoon, Pip pulled back a dusty velvet curtain in his grandfather’s house. Behind it stood a spiral staircase winding upward. Curiosity sparked in his amber eyes. Pip climbed the wooden steps and pushed open a heavy oak door, revealing the warm, forgotten Secret Attic Library.",
+      "audio_script": "On a rainy afternoon, Pip pulled back a dusty velvet curtain in his grandfather’s house. Behind it stood a spiral staircase winding upward. Curiosity sparked in his amber eyes. Pip climbed the wooden steps and pushed open a heavy oak door, revealing the warm, forgotten Secret Attic Library.",
+      "characters_present": [
+        "Pip"
+      ],
+      "image_prompt": "Wide establishing landscape shot looking up at a grand spiral staircase leading to a grand room. Pip, a seven-year-old boy with messy chestnut-brown hair, bright amber eyes, wearing a mustard-yellow knitted sweater, slate-blue denim overalls, and dark brown leather boots, gazes upward in wide-eyed awe. Dusty sunbeams stream through stained-glass windows onto towering bookshelves in the Secret Attic Library. Award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Pip (a character with Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose, wearing Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs, with Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "mysterious slow piano and soft woodwinds"
+    },
+    {
+      "scene_number": 2,
+      "title": "A Brass Friend",
+      "narrative_text": "Inside the library, leather-bound books stacked as high as trees. Atop a mahogany desk sat a tiny metallic bird. With a soft chime and clicking gears, the Clockwork Owl stretched his brass wings. Barnaby opened his glowing sapphire eyes, turned his head, and gave Pip a friendly hoot.",
+      "audio_script": "Inside the library, leather-bound books stacked as high as trees. Atop a mahogany desk sat a tiny metallic bird. With a soft chime and clicking gears, the Clockwork Owl stretched his brass wings. Barnaby opened his glowing sapphire eyes, turned his head, and gave Pip a friendly hoot.",
+      "characters_present": [
+        "Pip",
+        "Barnaby"
+      ],
+      "image_prompt": "Eye-level medium discovery shot. Pip, with his messy chestnut-brown hair, mustard-yellow knitted sweater, and slate-blue denim overalls, leans over a mahogany desk smiling. Perched on an ancient book is Barnaby, a small Clockwork Owl made of polished golden brass with glowing sapphire-blue glass eyes and visible silver gears. Ambient warm light illuminates floating dust motes. Award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Pip (a character with Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose, wearing Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs, with Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots); Barnaby (a character with Small mechanical owl crafted from polished golden brass feathers, visible tiny silver gears at his wing joints, and glowing sapphire-blue glass eyes, wearing Polished metallic body with intricate filigree patterns, with A tiny silver wind-up key slot positioned neatly on his back), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "whimsical music box and gentle flute"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Floating Key",
+      "narrative_text": "Barnaby fluttered his wings and pointed his brass beak upward. High near the vaulted rafters hovered a shimmering object. It was a Floating Key, bobbing in the air like a tiny golden feather. Below it stood a grand locked chest covered in constellation maps, waiting to be opened.",
+      "audio_script": "Barnaby fluttered his wings and pointed his brass beak upward. High near the vaulted rafters hovered a shimmering object. It was a Floating Key, bobbing in the air like a tiny golden feather. Below it stood a grand locked chest covered in constellation maps, waiting to be opened.",
+      "characters_present": [
+        "Pip",
+        "Barnaby"
+      ],
+      "image_prompt": "Dynamic low-angle exploration shot looking up at high wooden rafters. A luminous Floating Key glows with golden sparks high out of reach. Standing below, Pip, in his mustard-yellow knitted sweater and slate-blue denim overalls, points upward next to Barnaby, the golden brass Clockwork Owl with glowing sapphire eyes perched on his shoulder. Award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Pip (a character with Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose, wearing Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs, with Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots); Barnaby (a character with Small mechanical owl crafted from polished golden brass feathers, visible tiny silver gears at his wing joints, and glowing sapphire-blue glass eyes, wearing Polished metallic body with intricate filigree patterns, with A tiny silver wind-up key slot positioned neatly on his back), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "wonder-filled harp and light strings"
+    },
+    {
+      "scene_number": 4,
+      "title": "Teamwork in the Air",
+      "narrative_text": "The key was too high for Pip to reach. Barnaby spun his silver gears and took flight! Whispering past glowing lamps, the clockwork bird fluttered around the Floating Key. With gentle taps of his brass wings, Barnaby guided the drifting key downward into Pip’s waiting hands.",
+      "audio_script": "The key was too high for Pip to reach. Barnaby spun his silver gears and took flight! Whispering past glowing lamps, the clockwork bird fluttered around the Floating Key. With gentle taps of his brass wings, Barnaby guided the drifting key downward into Pip’s waiting hands.",
+      "characters_present": [
+        "Pip",
+        "Barnaby"
+      ],
+      "image_prompt": "Dramatic medium action framing. Barnaby, the mechanical Clockwork Owl with gleaming golden wings and glowing sapphire eyes, swoops near the rafters, creating swirling golden wind trails that gently nudge the glowing Floating Key downward. Below, Pip, wearing his mustard-yellow sweater and slate-blue denim overalls, reaches up excitedly to catch the key. Award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Pip (a character with Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose, wearing Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs, with Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots); Barnaby (a character with Small mechanical owl crafted from polished golden brass feathers, visible tiny silver gears at his wing joints, and glowing sapphire-blue glass eyes, wearing Polished metallic body with intricate filigree patterns, with A tiny silver wind-up key slot positioned neatly on his back), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "triumphant playful orchestral crescendo"
+    },
+    {
+      "scene_number": 5,
+      "title": "Starlight Stories",
+      "narrative_text": "Pip inserted the golden key into the chest's lock. Click! The lid popped open, releasing hundreds of glittering story-stars that danced around the library. Sitting side by side on a cozy rug, Pip and Barnaby read magical tales beneath a ceiling full of glowing constellations.",
+      "audio_script": "Pip inserted the golden key into the chest's lock. Click! The lid popped open, releasing hundreds of glittering story-stars that danced around the library. Sitting side by side on a cozy rug, Pip and Barnaby read magical tales beneath a ceiling full of glowing constellations.",
+      "characters_present": [
+        "Pip",
+        "Barnaby"
+      ],
+      "image_prompt": "Warm wide celebratory shot in the Secret Attic Library. Magical glowing starlight constellation motes float around the room. Pip, with his messy chestnut hair, mustard-yellow sweater, slate-blue denim overalls, and dark brown leather boots, sits comfortably on a woven rug reading an open glowing storybook. Beside him sits Barnaby, the brass Clockwork Owl with bright sapphire eyes resting happily. Award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Pip (a character with Seven-year-old boy with messy chestnut-brown hair, bright amber eyes, rosy cheeks, and light freckles across his nose, wearing Mustard-yellow knitted wool sweater and slate-blue denim overalls with rolled-up cuffs, with Small brass spyglass tucked into his front overall pocket and sturdy dark brown leather boots); Barnaby (a character with Small mechanical owl crafted from polished golden brass feathers, visible tiny silver gears at his wing joints, and glowing sapphire-blue glass eyes, wearing Polished metallic body with intricate filigree patterns, with A tiny silver wind-up key slot positioned neatly on his back), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "peaceful lullaby strings and soft piano"
+    }
+  ],
+  "moral_or_takeaway": "Curiosity and teamwork can unlock the most magical adventures in unexpected places."
+}

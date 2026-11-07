@@ -1,0 +1,91 @@
+{
+  "title": "Elara and the Golden Shell of the Sunken Castle",
+  "logline": "A curious girl and her friendly dolphin friend embark on an underwater adventure to find a magical golden shell and awaken the wonders of a forgotten sunken castle.",
+  "genre": "Fantasy",
+  "target_audience": "Kids (Ages 6-8)",
+  "keywords": [
+    "Golden Shell",
+    "Friendly Dolphin",
+    "Sunken Castle"
+  ],
+  "character_bible": [
+    {
+      "name": "Elara",
+      "role": "Protagonist",
+      "visual_appearance": "Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose.",
+      "signature_clothing": "A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings.",
+      "distinct_accessories": "A small, woven straw satchel slung across her shoulder.",
+      "personality_trait": "Inquisitive, brave, kind"
+    },
+    {
+      "name": "Finny",
+      "role": "Playful Sidekick",
+      "visual_appearance": "A medium-sized, friendly dolphin with shimmering sapphire blue skin, a paler belly, and intelligent, sparkling black eyes.",
+      "signature_clothing": "None",
+      "distinct_accessories": "None",
+      "personality_trait": "Playful, wise, loyal"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Whispering Waves",
+      "narrative_text": "Elara loved exploring the sunny shores, dreaming of ancient tales. One afternoon, while collecting shiny pebbles, she found an old, worn map hinting at a mysterious Sunken Castle far beneath the waves. Her heart fluttered with excitement and wonder!",
+      "audio_script": "Elara loved exploring the sunny shores, dreaming of ancient tales. One afternoon, while collecting shiny pebbles, she found an old, worn map hinting at a mysterious Sunken Castle far beneath the waves. Her heart fluttered with excitement and wonder!",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "Wide establishing landscape shot of Elara, a small human girl about 7 years old with bright emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon, a sprinkle of freckles on her nose. She wears a seafoam green tunic dress with seashell embroidery over sunny yellow leggings, and a small woven straw satchel. She sits on warm golden sand, looking at an ancient, rolled-up map, her emerald eyes wide with curiosity, a gentle smile on her face. The sparkling turquoise ocean stretches behind her, with distant cliffs under a soft, golden afternoon sun. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose., wearing A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings., with A small, woven straw satchel slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Whimsical orchestral flute"
+    },
+    {
+      "scene_number": 2,
+      "title": "A Finny Friend Appears",
+      "narrative_text": "The next day, Elara raced back to the water's edge. A shimmering splash caught her eye! A friendly dolphin, Finny, surfaced, his sparkling black eyes full of playful curiosity. Finny seemed to understand her map, nudging it gently with his nose, beckoning her towards the deeper, mysterious blue.",
+      "audio_script": "The next day, Elara raced back to the water's edge. A shimmering splash caught her eye! A friendly dolphin, Finny, surfaced, his sparkling black eyes full of playful curiosity. Finny seemed to understand her map, nudging it gently with his nose, beckoning her towards the deeper, mysterious blue.",
+      "characters_present": [
+        "Elara",
+        "Finny"
+      ],
+      "image_prompt": "Eye-level medium discovery shot of Elara, a small human girl about 7 years old with bright emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon, a sprinkle of freckles on her nose. She wears a seafoam green tunic dress with seashell embroidery over sunny yellow leggings, and a small woven straw satchel. She kneels at the shoreline, gazing with wonder at Finny, a friendly dolphin with shimmering sapphire blue skin and intelligent sparkling black eyes. Finny's head is out of the calm, clear water, playfully nudging Elara's ancient map. Soft morning light illuminates their happy expressions. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose., wearing A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings., with A small, woven straw satchel slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Playful, light-hearted strings"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Sunken Castle's Secret",
+      "narrative_text": "With Finny's help, Elara, surrounded by a magical air bubble, dove deep into the ocean. There, nestled among glowing corals, stood the magnificent, ancient Sunken Castle! Its grand entrance held a pedestal, mysteriously empty, waiting for something special. It was clear: a Golden Shell was needed!",
+      "audio_script": "With Finny's help, Elara, surrounded by a magical air bubble, dove deep into the ocean. There, nestled among glowing corals, stood the magnificent, ancient Sunken Castle! Its grand entrance held a pedestal, mysteriously empty, waiting for something special. It was clear: a Golden Shell was needed!",
+      "characters_present": [
+        "Elara",
+        "Finny"
+      ],
+      "image_prompt": "Dynamic low-angle exploration shot, looking up slightly at the grand, moss-covered entrance of the Sunken Castle. Elara, a small human girl about 7 years old with bright emerald green eyes, wavy auburn hair, freckles, wearing her seafoam green tunic dress and sunny yellow leggings, is encased in a shimmering, magical air bubble, her eyes wide with awe. Finny, the friendly sapphire blue dolphin, swims gracefully beside her, guiding her towards a glowing, empty pedestal at the castle's archway. Bioluminescent marine life illuminates the deep blue water. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose., wearing A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings., with A small, woven straw satchel slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Mysterious slow piano with underwater effects"
+    },
+    {
+      "scene_number": 4,
+      "title": "The Golden Shell's Glow",
+      "narrative_text": "Finny nudged Elara towards a nearby cluster of glowing anemones. Hidden within, they found it: a magnificent Golden Shell, shimmering with inner light! Elara carefully placed the precious shell onto the castle's pedestal. Instantly, a warm, golden light flooded the Sunken Castle, revealing forgotten pathways and ancient murals!",
+      "audio_script": "Finny nudged Elara towards a nearby cluster of glowing anemones. Hidden within, they found it: a magnificent Golden Shell, shimmering with inner light! Elara carefully placed the precious shell onto the castle's pedestal. Instantly, a warm, golden light flooded the Sunken Castle, revealing forgotten pathways and ancient murals!",
+      "characters_present": [
+        "Elara",
+        "Finny"
+      ],
+      "image_prompt": "Dramatic medium action framing inside the Sunken Castle. Elara, a small human girl about 7 years old with bright emerald green eyes, wavy auburn hair, freckles, wearing her seafoam green tunic dress and sunny yellow leggings, carefully places a radiant Golden Shell onto the pedestal. Her expression is focused and determined. Finny, the friendly sapphire blue dolphin, watches proudly beside her. The Golden Shell emits a brilliant, warm glow that illuminates the ancient, intricate stone walls of the castle, revealing hidden details. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose., wearing A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings., with A small, woven straw satchel slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Triumphant, swelling orchestral"
+    },
+    {
+      "scene_number": 5,
+      "title": "A Sparkling Promise",
+      "narrative_text": "With the Golden Shell's light, the Sunken Castle became a vibrant, living wonder! Elara and Finny shared a joyful moment, their adventure complete. As Elara returned to the surface, she carried a small, sparkling souvenir shell, a reminder of her brave journey and the amazing friendship she found with Finny, the friendly dolphin, in the heart of the Sunken Castle.",
+      "audio_script": "With the Golden Shell's light, the Sunken Castle became a vibrant, living wonder! Elara and Finny shared a joyful moment, their adventure complete. As Elara returned to the surface, she carried a small, sparkling souvenir shell, a reminder of her brave journey and the amazing friendship she found with Finny, the friendly dolphin, in the heart of the Sunken Castle.",
+      "characters_present": [
+        "Elara",
+        "Finny"
+      ],
+      "image_prompt": "Warm wide celebratory shot. Elara, a small human girl about 7 years old with bright emerald green eyes, wavy auburn hair, freckles, wearing her seafoam green tunic dress and sunny yellow leggings, is back on the sandy beach, a small, iridescent shell clutched in her hand, beaming happily. Finny, the friendly sapphire blue dolphin, playfully leaps out of the sparkling ocean nearby, his intelligent eyes twinkling. The setting sun casts a golden glow over the tranquil ocean, creating a magical, ethereal atmosphere. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small human girl, about 7 years old, with bright, curious emerald green eyes and long, wavy auburn hair tied with a sky-blue ribbon. She has a sprinkle of freckles on her nose., wearing A soft, seafoam green tunic dress with delicate seashell embroidery along the hem, worn over sunny yellow leggings., with A small, woven straw satchel slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Peaceful, heartwarming strings"
+    }
+  ],
+  "moral_or_takeaway": "Curiosity and friendship can unlock extraordinary adventures and reveal hidden wonders in the world around us."
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Elara and the Whispering Attic",
+  "logline": "A curious girl discovers a magical clockwork owl and a floating key in a forgotten attic library, awakening its ancient wonders.",
+  "genre": "Fantasy",
+  "target_audience": "Kids (Ages 6-8)",
+  "keywords": [
+    "Clockwork Owl",
+    "Floating Key",
+    "Attic Library"
+  ],
+  "character_bible": [
+    {
+      "name": "Elara",
+      "role": "Protagonist",
+      "visual_appearance": "Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose.",
+      "signature_clothing": "A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings.",
+      "distinct_accessories": "Shiny, dark brown leather button-up boots.",
+      "personality_trait": "Inquisitive, brave, gentle"
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Hidden Door",
+      "narrative_text": "On a rainy afternoon, Elara explored her grandmother's quiet house. Tucked away in a shadowy corner, she found a tiny, dusty door. With a gentle push, it creaked open, revealing a narrow staircase leading up to a forgotten attic library.",
+      "audio_script": "On a rainy afternoon, Elara explored her grandmother's quiet house. Tucked away in a shadowy corner, she found a tiny, dusty door. With a gentle push, it creaked open, revealing a narrow staircase leading up to a forgotten attic library.",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth, Wide establishing shot. Elara, small for her age with bright emerald green eyes and long braided auburn hair tied with a sky-blue ribbon, wearing a lavender smock dress with silver stars over pale yellow leggings and shiny dark brown leather button-up boots, stands at the base of a winding wooden staircase. The stairs lead up to a slightly ajar, dusty attic door, hinting at the 'Attic Library'. Volumetric golden light streams through a distant window, illuminating dust motes. The atmosphere is warm and ethereal. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose., wearing A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings., with Shiny, dark brown leather button-up boots.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Mysterious, gentle piano with a touch of wonder"
+    },
+    {
+      "scene_number": 2,
+      "title": "The Silent Watcher",
+      "narrative_text": "Inside the attic library, shelves overflowed with ancient, leather-bound books. Perched high on a towering stack, Elara spotted a magnificent, silent Clockwork Owl. Its brass gears were still, but its glassy eyes seemed to hold a secret, filling Elara with wonder.",
+      "audio_script": "Inside the attic library, shelves overflowed with ancient, leather-bound books. Perched high on a towering stack, Elara spotted a magnificent, silent Clockwork Owl. Its brass gears were still, but its glassy eyes seemed to hold a secret, filling Elara with wonder.",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "Eye-level medium discovery shot. Elara, small for her age with bright emerald green eyes and long braided auburn hair tied with a sky-blue ribbon, wearing a lavender smock dress with silver stars over pale yellow leggings and shiny dark brown leather button-up boots, gazes up with a look of pure wonder. Above her, a grand 'Clockwork Owl' with intricate brass gears sits silently on a dusty bookshelf. Soft, magical light emanates from behind the owl, casting a luminous rim. The 'Attic Library' background is filled with towering, ancient bookshelves. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose., wearing A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings., with Shiny, dark brown leather button-up boots.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Whimsical orchestral flute with a sense of awe"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Whimsical Guide",
+      "narrative_text": "Suddenly, a tiny, shimmering golden key appeared, floating magically before Elara! It bobbed and weaved, as if inviting her to follow. The 'Floating Key' led her deeper into the dusty aisles, past forgotten stories, towards a specific, aged book tucked away on a lower shelf.",
+      "audio_script": "Suddenly, a tiny, shimmering golden key appeared, floating magically before Elara! It bobbed and weaved, as if inviting her to follow. The 'Floating Key' led her deeper into the dusty aisles, past forgotten stories, towards a specific, aged book tucked away on a lower shelf.",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "Dynamic low-angle exploration shot, following the 'Floating Key' from Elara's perspective. The shimmering golden key, glowing softly, leads the way through narrow aisles of the 'Attic Library'. Elara, small for her age with bright emerald green eyes and long braided auburn hair tied with a sky-blue ribbon, wearing a lavender smock dress with silver stars over pale yellow leggings and shiny dark brown leather button-up boots, is seen from behind, reaching out slightly, her expression curious and excited. Dust motes dance in the ethereal light filtering through the shelves. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose., wearing A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings., with Shiny, dark brown leather button-up boots.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Playful, lighthearted pizzicato strings"
+    },
+    {
+      "scene_number": 4,
+      "title": "The Owl's Secret",
+      "narrative_text": "The floating key gently settled into a hidden slot on the Clockwork Owl. With a soft click and a whirring sound, the owl's glassy eyes lit up with a warm glow. Its brass wings slowly unfurled, revealing a secret compartment in the wall behind it!",
+      "audio_script": "The floating key gently settled into a hidden slot on the Clockwork Owl. With a soft click and a whirring sound, the owl's glassy eyes lit up with a warm glow. Its brass wings slowly unfurled, revealing a secret compartment in the wall behind it!",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "Dramatic medium action framing, centered on Elara and the 'Clockwork Owl'. Elara, small for her age with bright emerald green eyes and long braided auburn hair tied with a sky-blue ribbon, wearing a lavender smock dress with silver stars over pale yellow leggings and shiny dark brown leather button-up boots, watches intently, her face beaming with anticipation. The 'Floating Key' is now nestled in a slot on the owl's chest. The owl's eyes glow with internal light, and its intricate brass wings are in motion, revealing a hidden, glowing compartment in the dusty 'Attic Library' wall. Warm, dramatic light. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose., wearing A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings., with Shiny, dark brown leather button-up boots.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Building orchestral crescendo with chimes"
+    },
+    {
+      "scene_number": 5,
+      "title": "A Library Reborn",
+      "narrative_text": "The compartment revealed a vibrant, glowing section of the attic library, filled with shimmering lights and whispering stories. Magical books floated, and tiny sprites danced. Elara smiled, knowing the 'Attic Library's' magic was now awake, ready for endless adventures!",
+      "audio_script": "The compartment revealed a vibrant, glowing section of the attic library, filled with shimmering lights and whispering stories. Magical books floated, and tiny sprites danced. Elara smiled, knowing the 'Attic Library's' magic was now awake, ready for endless adventures!",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "Warm wide celebratory shot. Elara, small for her age with bright emerald green eyes and long braided auburn hair tied with a sky-blue ribbon, wearing a lavender smock dress with silver stars over pale yellow leggings and shiny dark brown leather button-up boots, stands in awe amidst a newly illuminated, magical section of the 'Attic Library'. Books glow softly, tiny light sprites dance, and vibrant flora with luminous petals emerge from shelves. The 'Clockwork Owl' sits proudly, its eyes still glowing. The atmosphere is overwhelmingly magical and joyful, with rich, jewel-toned lights. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with Small for her age, with bright, curious emerald green eyes and long, braided auburn hair tied with a sky-blue ribbon. Fair skin, freckles dusting her nose., wearing A soft, lavender-colored smock dress with small embroidered silver stars, worn over snug pale yellow leggings., with Shiny, dark brown leather button-up boots.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Triumphant, soaring orchestral theme with magical flourishes"
+    }
+  ],
+  "moral_or_takeaway": "Curiosity can unlock hidden wonders, and even the oldest, quietest places can hold the most magical secrets if you're brave enough to explore."
+}

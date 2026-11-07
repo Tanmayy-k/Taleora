@@ -1,0 +1,91 @@
+{
+  "title": "Elara and the Library of Whispers",
+  "logline": "A curious girl discovers a magical clockwork owl and a floating key that unlock a hidden, enchanting library filled with untold stories.",
+  "genre": "Fantasy",
+  "target_audience": "Kids (Ages 6-8)",
+  "keywords": [
+    "Clockwork Owl",
+    "Floating Key",
+    "Secret Attic Library"
+  ],
+  "character_bible": [
+    {
+      "name": "Elara",
+      "role": "Protagonist",
+      "visual_appearance": "A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles.",
+      "signature_clothing": "A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots.",
+      "distinct_accessories": "A small, worn leather satchel with a polished brass clasp, slung across her shoulder.",
+      "personality_trait": "Adventurous, imaginative, kind-hearted."
+    },
+    {
+      "name": "Clockwork Owl",
+      "role": "Magical Guide",
+      "visual_appearance": "A magnificent, intricate owl crafted from shimmering brass and polished copper, with gears gently whirring. Its eyes glow with a soft, warm amber light.",
+      "signature_clothing": "None (it's a mechanical creature).",
+      "distinct_accessories": "Tiny, decorative emerald-green clock hands on its chest.",
+      "personality_trait": "Wise, mysterious, helpful."
+    }
+  ],
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Whispering Attic",
+      "narrative_text": "One quiet afternoon, Elara felt a peculiar tingle of adventure. A faint, rhythmic ticking sound drifted from the old attic, calling to her curious heart. She wondered what secrets lay hidden in the dusty room above, waiting to be discovered.",
+      "audio_script": "One quiet afternoon, Elara felt a peculiar tingle of adventure. A faint, rhythmic ticking sound drifted from the old attic, calling to her curious heart. She wondered what secrets lay hidden in the dusty room above, waiting to be discovered.",
+      "characters_present": [
+        "Elara"
+      ],
+      "image_prompt": "award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth, A wide establishing landscape shot of Elara, a small, nimble girl with bright, curious emerald eyes and long, wavy auburn hair tied with a golden ribbon, fair skin with light freckles, wearing a sky-blue tunic dress with silver star embroidery, forest-green leggings, and brown leather ankle boots, with a worn leather satchel, standing at the bottom of a creaky wooden staircase, gazing upwards towards a shadowed attic door. Volumetric golden sunlight streams through a nearby window, illuminating dust motes. The atmosphere is warm and ethereal. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, rich vibrant tones, cinematic depth., Featuring: Elara (a character with A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles., wearing A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots., with A small, worn leather satchel with a polished brass clasp, slung across her shoulder.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Whimsical orchestral flute"
+    },
+    {
+      "scene_number": 2,
+      "title": "The Gleaming Clockwork Owl",
+      "narrative_text": "Elara bravely climbed into the attic. Among forgotten trunks and cobwebbed treasures, a magnificent Clockwork Owl sat silently. Suddenly, its amber eyes sparked to life, and its brass wings whirred softly, beckoning Elara deeper into the shadows.",
+      "audio_script": "Elara bravely climbed into the attic. Among forgotten trunks and cobwebbed treasures, a magnificent Clockwork Owl sat silently. Suddenly, its amber eyes sparked to life, and its brass wings whirred softly, beckoning Elara deeper into the shadows.",
+      "characters_present": [
+        "Elara",
+        "Clockwork Owl"
+      ],
+      "image_prompt": "An eye-level medium discovery shot. Elara, a small, nimble girl with bright, curious emerald eyes and long, wavy auburn hair tied with a golden ribbon, fair skin with light freckles, wearing a sky-blue tunic dress with silver star embroidery, forest-green leggings, and brown leather ankle boots, with a worn leather satchel, looks with awe at a magnificent Clockwork Owl crafted from shimmering brass and polished copper, with gears gently whirring and eyes glowing with soft, warm amber light, and tiny emerald-green clock hands on its chest. The attic is dusty but bathed in a soft, magical glow. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles., wearing A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots., with A small, worn leather satchel with a polished brass clasp, slung across her shoulder.); Clockwork Owl (a character with A magnificent, intricate owl crafted from shimmering brass and polished copper, with gears gently whirring. Its eyes glow with a soft, warm amber light., wearing None (it's a mechanical creature)., with Tiny, decorative emerald-green clock hands on its chest.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Mysterious slow piano"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Floating Key's Dance",
+      "narrative_text": "The Clockwork Owl led Elara to a hidden wall, where an ornate, book-shaped door appeared! Above it, a beautiful, old-fashioned Floating Key shimmered and danced just out of her reach. How would she ever get it down?",
+      "audio_script": "The Clockwork Owl led Elara to a hidden wall, where an ornate, book-shaped door appeared! Above it, a beautiful, old-fashioned Floating Key shimmered and danced just out of her reach. How would she ever get it down?",
+      "characters_present": [
+        "Elara",
+        "Clockwork Owl"
+      ],
+      "image_prompt": "A dynamic low-angle exploration shot. Elara, a small, nimble girl with bright, curious emerald eyes and long, wavy auburn hair tied with a golden ribbon, fair skin with light freckles, wearing a sky-blue tunic dress with silver star embroidery, forest-green leggings, and brown leather ankle boots, with a worn leather satchel, reaches eagerly upwards with determination. Above her, a shimmering, ornate Floating Key bobs gently near a book-shaped door. The Clockwork Owl, crafted from shimmering brass and polished copper, with glowing amber eyes and emerald clock hands, perches nearby, watching. Soft, ethereal light emanates from the key. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles., wearing A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots., with A small, worn leather satchel with a polished brass clasp, slung across her shoulder.); Clockwork Owl (a character with A magnificent, intricate owl crafted from shimmering brass and polished copper, with gears gently whirring. Its eyes glow with a soft, warm amber light., wearing None (it's a mechanical creature)., with Tiny, decorative emerald-green clock hands on its chest.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Playful pizzicato strings"
+    },
+    {
+      "scene_number": 4,
+      "title": "Unlocking the Library",
+      "narrative_text": "With a clever idea, Elara used the Clockwork Owl's gentle nudge to reach the Floating Key. It felt cool and smooth in her hand. The key slid perfectly into the book-shaped door, and with a soft click, it swung open, revealing a breathtaking sight!",
+      "audio_script": "With a clever idea, Elara used the Clockwork Owl's gentle nudge to reach the Floating Key. It felt cool and smooth in her hand. The key slid perfectly into the book-shaped door, and with a soft click, it swung open, revealing a breathtaking sight!",
+      "characters_present": [
+        "Elara",
+        "Clockwork Owl"
+      ],
+      "image_prompt": "A dramatic medium action framing shot. Elara, a small, nimble girl with bright, curious emerald eyes and long, wavy auburn hair tied with a golden ribbon, fair skin with light freckles, wearing a sky-blue tunic dress with silver star embroidery, forest-green leggings, and brown leather ankle boots, with a worn leather satchel, her face filled with utter amazement, pushes open the book-shaped door. The Clockwork Owl, crafted from shimmering brass and polished copper, with glowing amber eyes and emerald clock hands, is perched on her shoulder, looking into the newly revealed Secret Attic Library. Golden light streams outwards, highlighting ancient, glowing book spines. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth., Featuring: Elara (a character with A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles., wearing A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots., with A small, worn leather satchel with a polished brass clasp, slung across her shoulder.); Clockwork Owl (a character with A magnificent, intricate owl crafted from shimmering brass and polished copper, with gears gently whirring. Its eyes glow with a soft, warm amber light., wearing None (it's a mechanical creature)., with Tiny, decorative emerald-green clock hands on its chest.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Triumphant strings with chimes"
+    },
+    {
+      "scene_number": 5,
+      "title": "The Secret Attic Library",
+      "narrative_text": "Inside, the Secret Attic Library glowed with soft, magical light. Books hovered in the air, their pages turning themselves as if whispering ancient tales. Elara smiled, knowing she had found a truly special place, ready for endless adventures and stories.",
+      "audio_script": "Inside, the Secret Attic Library glowed with soft, magical light. Books hovered in the air, their pages turning themselves as if whispering ancient tales. Elara smiled, knowing she had found a truly special place, ready for endless adventures and stories.",
+      "characters_present": [
+        "Elara",
+        "Clockwork Owl"
+      ],
+      "image_prompt": "award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth, A warm wide celebratory shot. Elara, a small, nimble girl with bright, curious emerald eyes and long, wavy auburn hair tied with a golden ribbon, fair skin with light freckles, wearing a sky-blue tunic dress with silver star embroidery, forest-green leggings, and brown leather ankle boots, with a worn leather satchel, stands in the center of the Secret Attic Library, her face radiant with joy and wonder. The Clockwork Owl, crafted from shimmering brass and polished copper, with glowing amber eyes and emerald clock hands, hovers beside her. Books float magically, and shelves are filled with luminous tomes. Warm, ethereal lighting fills the entire space with rich, vibrant tones. award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, cinematic depth., Featuring: Elara (a character with A small, nimble girl, age 7, with bright, curious emerald eyes. She has long, wavy auburn hair tied neatly with a golden ribbon. Her skin is fair with light freckles., wearing A sky-blue tunic dress with intricate silver star embroidery along the hem, warm forest-green leggings, and soft brown leather ankle boots., with A small, worn leather satchel with a polished brass clasp, slung across her shoulder.); Clockwork Owl (a character with A magnificent, intricate owl crafted from shimmering brass and polished copper, with gears gently whirring. Its eyes glow with a soft, warm amber light., wearing None (it's a mechanical creature)., with Tiny, decorative emerald-green clock hands on its chest.), award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field",
+      "music_mood": "Magical orchestral crescendo"
+    }
+  ],
+  "moral_or_takeaway": "Curiosity and a bit of ingenuity can unlock incredible wonders and lead to discoveries beyond your wildest dreams."
+}
