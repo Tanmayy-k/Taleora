@@ -23,13 +23,17 @@ class ImageGenerator:
         self.hf_token = hf_token or config.HF_TOKEN
         self.default_engine = "pollinations"  # Default zero-cost, high-speed engine
 
-    def _generate_pollinations(self, prompt: str, width: int = 768, height: int = 768, seed: Optional[int] = None) -> bytes:
+    def _generate_pollinations(self, prompt: str, width: int = 1024, height: int = 1024, seed: Optional[int] = None) -> bytes:
         """
         Generates an illustration via Pollinations.ai with enhanced storybook prompt tuning.
         100% free, zero authentication required, reliable uptime.
         """
         # Append quality enhancements
-        enhanced_prompt = f"{prompt}, storybook illustration, masterpiece, detailed, clear focus, 8k resolution"
+        enhanced_prompt = (
+            f"{prompt}, award-winning children's storybook illustration, soft painterly gouache and watercolor texture, "
+            f"rich vibrant harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, "
+            f"expressive character design, cinematic composition, sharp focus, 8k resolution"
+        )
         encoded_prompt = urllib.parse.quote(enhanced_prompt)
 
         url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width={width}&height={height}&nologo=true"
@@ -46,18 +50,18 @@ class ImageGenerator:
 
         return response.content
 
-    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 768, height: int = 768) -> bytes:
+    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 1024, height: int = 1024) -> bytes:
         """Creates a rich, colorful storybook visual card as an emergency offline fallback."""
         from PIL import ImageDraw
         img = Image.new("RGB", (width, height), color=(26, 26, 64))
         draw = ImageDraw.Draw(img)
         # Decorative border
-        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=5)
-        draw.rectangle([(30, 30), (width - 30, height - 30)], outline=(199, 210, 254), width=2)
+        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=6)
+        draw.rectangle([(32, 32), (width - 32, height - 32)], outline=(199, 210, 254), width=3)
         # Title and summary
-        draw.text((60, 260), title[:35], fill=(254, 240, 138))
-        draw.text((60, 340), text[:120] + "...", fill=(241, 245, 249))
-        draw.text((60, 480), "Taleora Storybook Illustration", fill=(165, 180, 252))
+        draw.text((80, 360), title[:40], fill=(254, 240, 138))
+        draw.text((80, 440), text[:150] + "...", fill=(241, 245, 249))
+        draw.text((80, 580), "Taleora Storybook Illustration", fill=(165, 180, 252))
         
         buf = io.BytesIO()
         img.save(buf, format="PNG")
@@ -85,23 +89,6 @@ class ImageGenerator:
             raise RuntimeError(f"Hugging Face Inference failed (HTTP {response.status_code}): {response.text[:200]}")
 
         return response.content
-
-    def _create_stylized_card(self, title: str, text: str, prompt: str, width: int = 768, height: int = 768) -> bytes:
-        """Creates a rich, colorful storybook visual card as an emergency offline fallback."""
-        from PIL import ImageDraw
-        img = Image.new("RGB", (width, height), color=(26, 26, 64))
-        draw = ImageDraw.Draw(img)
-        # Decorative border
-        draw.rectangle([(20, 20), (width - 20, height - 20)], outline=(254, 240, 138), width=5)
-        draw.rectangle([(30, 30), (width - 30, height - 30)], outline=(199, 210, 254), width=2)
-        # Title and summary
-        draw.text((60, 260), title[:35], fill=(254, 240, 138))
-        draw.text((60, 340), text[:120] + "...", fill=(241, 245, 249))
-        draw.text((60, 480), "Taleora Storybook Illustration", fill=(165, 180, 252))
-        
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        return buf.getvalue()
 
     def generate_scene_image(
         self,
@@ -187,7 +174,7 @@ class ImageGenerator:
                 seed=42 + scene.scene_number  # Consistent seed per scene unless regenerated
             )
             results[scene.scene_number] = img_path
-            # Polite pause between generations
-            time.sleep(1)
+            # Polite pause between generations to respect rate limits
+            time.sleep(2)
 
         return results

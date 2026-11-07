@@ -46,32 +46,32 @@ DEFAULT_GEMINI_MODEL = get_secret("GEMINI_MODEL", "gemini-2.5-flash")
 GENRES = {
     "Fantasy": {
         "description": "Magical realms, enchanting creatures, mythical quests, and wonder.",
-        "visual_style": "whimsical storybook illustration, rich vibrant colors, soft luminous lighting, magical atmosphere",
+        "visual_style": "award-winning fantasy storybook illustration, painterly gouache and soft watercolor texture, glowing magical flora, luminous rim lighting, warm ethereal atmosphere, rich vibrant tones, cinematic depth",
         "tone": "magical, wonder-filled, inspiring"
     },
     "Sci-Fi": {
         "description": "Futuristic adventures, friendly robots, outer space, and invention.",
-        "visual_style": "retro-futuristic storybook art, glowing neon accents, clean sleek shapes, starry vistas",
+        "visual_style": "retro-futuristic children's storybook illustration, soft painterly digital gouache, warm starlight and gentle neon glow, celestial vistas, whimsical gadgetry, friendly rounded mechanical design, rich cosmic palette",
         "tone": "curious, innovative, exciting"
     },
     "Adventure": {
         "description": "Exploration, hidden treasures, daring journeys, and courage.",
-        "visual_style": "dynamic narrative illustration, warm earth tones, cinematic golden hour lighting, lush landscapes",
+        "visual_style": "dynamic storybook adventure illustration, rich golden hour sunlight, volumetric sunbeams, painterly lush landscape, expressive character posture, warm earthy and sky-blue palette, cinematic framing",
         "tone": "brave, energetic, spirited"
     },
     "Mystery": {
         "description": "Curious puzzles, gentle detective work, clues, and discoveries.",
-        "visual_style": "cozy detective storybook illustration, soft shadows, warm lantern light, curious details",
+        "visual_style": "cozy storybook mystery illustration, warm amber lantern glow, deep navy shadows, atmospheric interior details, curious magnifying perspective, soft storybook textures, rich detailed atmosphere",
         "tone": "intriguing, cozy, inquisitive"
     },
     "Fairy Tale": {
         "description": "Classic folklore motifs, gentle morals, talking animals, and enchanted forests.",
-        "visual_style": "classic European folklore watercolor and gouache, textured paper effect, ornate gentle borders",
+        "visual_style": "classic European folklore storybook illustration, delicate gouache and textured watercolor wash, whimsical fairytale flora, soft magical twilight, ornate storybook aesthetic, vibrant enchanting colors",
         "tone": "timeless, gentle, heartwarming"
     },
     "Bedtime Story": {
         "description": "Calming rhythms, soothing themes, gentle comfort, and sleepy resolutions.",
-        "visual_style": "dreamy pastel illustration, soft moonlight, starry twilight blues, gentle rounded shapes",
+        "visual_style": "dreamy bedtime storybook illustration, soothing pastel palette, velvet midnight blues, gentle crescent moonlight, soft stardust glow, calming painterly textures, tranquil atmosphere",
         "tone": "soothing, lyrical, tranquil"
     }
 }

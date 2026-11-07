@@ -116,8 +116,17 @@ TARGET AUDIENCE DIRECTIVE: {audience}
 
 MANDATORY RULES:
 1. INTEGRATE KEYWORDS NATURALLY: The 3 user keywords must be central elements of the plot, wonder, or problem-solving, not merely mentioned in passing.
-2. CHARACTER CONSISTENCY BIBLE: You MUST create 1 to 2 memorable main characters. Define their physical traits (hair, eyes, skin/fur) and wardrobe (exact colors, garment names) with high specificity.
-3. SCENE IMAGE PROMPTS: Every scene's `image_prompt` MUST explicitly restate the character's exact visual appearance and clothing from the character bible whenever that character is in the scene. Also include the visual style DNA: "{genre_info['visual_style']}".
+2. CHARACTER CONSISTENCY BIBLE: You MUST create 1 to 2 memorable main characters. Define their physical traits (hair/fur/eyes, species/stature) and signature wardrobe (exact garment names and precise colors) with extreme specificity so that they remain 100% visually identical across every illustration.
+3. DETAILED SCENE IMAGE PROMPTS (MANDATORY HIGH QUALITY):
+   Every scene's `image_prompt` MUST be a rich, descriptive 60-90 word visual storyboard prompt. Avoid short or generic prompts.
+   Each `image_prompt` MUST include:
+   - CAMERA ANGLE & FRAMING: Vary perspectives across chapters for cinematic diversity (e.g. Scene 1: wide establishing landscape; Scene 2: eye-level medium discovery shot; Scene 3: dynamic low-angle exploration; Climax: dramatic medium action framing; Finale: warm wide celebratory shot).
+   - EXACT CHARACTER VISUAL SIGNATURE: Whenever a character is present, explicitly restate their exact physical traits, body proportions, fur/hair colors, and signature clothing + colors verbatim from the character bible.
+   - ENVIRONMENT & BACKGROUND DETAILS: Tangible textures, architecture, flora, terrain, weather, or celestial objects creating immersive depth.
+   - LIGHTING & ATMOSPHERE: Specific illumination (e.g. volumetric golden sunlight, glowing lantern light, starlight shimmer, bioluminescent motes).
+   - HARMONIOUS COLOR PALETTE: Rich, complementary color palette tailored to the scene mood.
+   - CHARACTER EMOTION: Expressive facial features, eye reflections, and body posture matching the story beat.
+   - ART STYLE: Include the visual style DNA: "{genre_info['visual_style']}".
 4. CHILD SAFETY: The story must be 100% wholesome, inspiring, and free of violence, cruelty, profanity, or adult themes.
 5. CLEAN AUDIO SCRIPT: Each scene must include an `audio_script` containing only spoken narrative words (no sound effects, stage cues, or parentheticals) ready for text-to-speech narration.
 6. OUTPUT FORMAT: You must return clean structured JSON conforming exactly to the requested StoryBook schema.
@@ -146,7 +155,7 @@ Requirements:
 - Ensure the 3 keywords have meaningful, imaginative roles in the narrative arc.
 - Establish a complete arc across {scene_count} scenes (Beginning / Catalyst -> Discovery / Rising Adventure -> Climax / Creative Solution -> Heartwarming Conclusion).
 - Create a distinct character bible so illustrations remain visually consistent across all {scene_count} scenes.
-- Formulate each scene's `image_prompt` with extreme visual clarity, restating the character's clothing and physical details.
+- Formulate each scene's `image_prompt` with rich visual storytelling (varied camera angles, exact character appearance and clothing restated, vivid lighting, detailed background, and atmospheric depth).
 - Provide clean `audio_script` for each scene for Edge TTS narration.
 """
     return prompt.strip()

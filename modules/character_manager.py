@@ -73,6 +73,6 @@ def guarantee_scene_character_consistency(
         parts.append("Featuring: " + "; ".join(injected_char_descriptions))
 
     # Standard high-quality storybook render tags
-    parts.append("storybook art, masterwork children's book illustration, high detail, vibrant, cinematic lighting")
+    parts.append("award-winning children's storybook illustration, soft painterly gouache and watercolor texture, rich harmonious colors, warm volumetric lighting, storybook cover quality, highly detailed, expressive character design, cinematic depth of field")
 
     return ", ".join(parts)
